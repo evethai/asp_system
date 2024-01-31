@@ -1,4 +1,4 @@
-# asp_system - Artwork Sharing Platform - Nền tảng chia sẽ sản phẩm nghệ thuật
+# asp_system - Artwork Sharing Platform - Nền tảng chia sẻ sản phẩm nghệ thuật
 ##  1. Giới thiệu
 ASP là một nền tảng dành cho các artist có thể chia sẽ các tác phẩm nghệ thuật và mọi người dùng có thể mua, bán và giao lưu trao đổi sản phẩm theo ý thích của bản thân.
 ## 2. Tính năng 

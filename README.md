@@ -9,9 +9,9 @@ ASP là một nền tảng dành cho các artist có thể chia sẻ các tác p
 ## 3. Thành viên thực hiện dự án
 1. [Nguyễn Quốc Thai](https://github.com/evethai)
 2. [Đổ Duy Khanh](https://github.com/BlackerDK)
-3. [Cao Văn Công]
-4. [Nguyễn Tấn Đạt]
-5. [Nguyền Đoàn Anh Duy]
+3. [Cao Văn Công](https://github.com/caocong2KB6)
+4. [Nguyễn Tấn Đạt](https://github.com/datntse)
+5. [Nguyền Đoàn Anh Duy](https://github.com/SmileeXD)
 6. [Phan Văn Cường]
 
 

@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Services
 {
-    public interface IArtworkService
+    public interface ICatalogyService
     {
-        Task<IEnumerable<Artwork>> GetAllArtworks();
+        Task<IEnumerable<Category>> GetAllCatalogy();
+        void AddNewCatalogy(Category category);
     }
 }

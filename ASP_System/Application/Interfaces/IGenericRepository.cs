@@ -26,5 +26,4 @@ namespace Application.Interfaces
         Task<T> GetByConditionAsync(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> GetAllAsync();
     }
-
 }

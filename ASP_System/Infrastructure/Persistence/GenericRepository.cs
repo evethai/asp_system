@@ -49,5 +49,9 @@ namespace Infrastructure.Persistence
             return entity;
         }
 
+        public IQueryable<T> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
     }
 }

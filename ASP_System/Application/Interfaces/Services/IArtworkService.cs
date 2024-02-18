@@ -1,15 +1,11 @@
-﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Model;
 
 namespace Application.Interfaces.Services
 {
     public interface IArtworkService
     {
-        Task<IEnumerable<Artwork>> GetAllArtworks();
-
+        Task<IEnumerable<ArtworkDTO>> GetAllArtworks();
+        Task<ArtworkDTO> GetArtworkById(int id);
+        Task<ArtworkDTO> AddArtwork(ArtworkDTO artwork);
     }
 }

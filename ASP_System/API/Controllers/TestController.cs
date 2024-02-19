@@ -46,17 +46,14 @@ namespace API.Controllers
 
         //put update
         [HttpPut("UpdateArtwork")]
-        public async Task<IActionResult> UpdateArtwork(ArtworkDTO artwork)
+        public async Task<IActionResult> UpdateArtwork(ArtworkUpdateDTO artwork)
         {
-            try
+            var reponse = await _artworkService.UpdateArtwork(artwork);
+            if (reponse.IsSuccess)
             {
-                var result = await _artworkService.UpdateArtwork(artwork);
-                return Ok(result);
+                return Ok(reponse);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return BadRequest(reponse);
         }
 
         [HttpPost("GetArtworkByFilter")]

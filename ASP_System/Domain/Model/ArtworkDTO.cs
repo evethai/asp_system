@@ -23,6 +23,29 @@ namespace Domain.Model
         public bool? Status { get; set; }
         public int? ReOrderQuantity { get; set; }
     }
+    public class ArtworkDeleteDTO
+    {
+        [Key]
+        [Required(ErrorMessage = "Id is required")]
+        public int ArtworkId { get; set; }
+        public bool? Status { get; set; }
+    }
+
+    public class ArtworkUpdateDTO
+    {
+        [Key]
+        [Required(ErrorMessage = "Id is required")]
+        public int ArtworkId { get; set; }
+
+        [Required(ErrorMessage = "Title is required")]
+        public string Title { get; set; }
+        public string Description { get; set; }
+        [Required(ErrorMessage = "Price is required")]
+        public double? Price { get; set; }
+        public DateTime? UpdateOn { get; set; }
+        public bool? Status { get; set; }
+        public int? ReOrderQuantity { get; set; }
+    }
     public class ArtworkAddDTO
     {
         [Required(ErrorMessage = "Title is required")]

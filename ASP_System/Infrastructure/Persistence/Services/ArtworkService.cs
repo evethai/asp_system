@@ -85,30 +85,36 @@ namespace Infrastructure.Persistence.Services
             return _mapper.Map<ArtworkDTO>(Artwork);
         }
 
-        public  Task<ResponseDTO> UpdateArtwork(ArtworkDTO artwork)
+        public   async Task<ResponseDTO> UpdateArtwork(ArtworkUpdateDTO artwork)
         {
             try
             {
-
-                var existingArtwork = _unitOfWork.Repository<Artwork>().GetByIdAsync(artwork.ArtworkId);
+                var existingArtwork = _unitOfWork.Repository<Artwork>().GetQueryable().FirstOrDefault(a => a.ArtworkId == artwork.ArtworkId);
                 if (existingArtwork == null)
                 {
-                    return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Artwork not found" });
+                    return (new ResponseDTO { IsSuccess = false, Message = "Artwork not found" });
                 }
-                else
-                {
-                    var newArtwork = _mapper.Map<Artwork>(artwork);
-
-                    _unitOfWork.Repository<Artwork>().UpdateAsync(newArtwork);
-                    _unitOfWork.Save();
-
-                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Artwork updated successfully", Data = artwork });
-                }
+                existingArtwork = submitCourseChange(existingArtwork, artwork);
+                await _unitOfWork.Repository<Artwork>().UpdateAsync(existingArtwork);
+                _unitOfWork.Save();
+                return (new ResponseDTO { IsSuccess = true, Message = "Artwork updated successfully", Data = artwork });
             }
             catch (Exception ex)
             {
-                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
+                return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
             }
+        }
+
+        private Artwork submitCourseChange(Artwork existingArtwork, ArtworkUpdateDTO artwork)
+        {
+            existingArtwork.Title = artwork.Title;
+            existingArtwork.Description = artwork.Description;
+            existingArtwork.Price = artwork.Price;
+            existingArtwork.ReOrderQuantity = artwork.ReOrderQuantity;
+            existingArtwork.Status = artwork.Status;
+            existingArtwork.UpdateOn = DateTime.Now;
+
+            return existingArtwork;
         }
 
     }

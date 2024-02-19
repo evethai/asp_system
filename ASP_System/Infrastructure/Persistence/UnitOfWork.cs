@@ -16,19 +16,32 @@ namespace Infrastructure.Persistence
             _context = context;
         }
 
-        public void Dispose()
-        {
-            _context.Dispose();
-        }
-
         public IGenericRepository<T> Repository<T>() where T : class
         {
             return new GenericRepository<T>(_context);
         }
 
-        public Task<int> Save()
+        public int Save()
         {
-            return  _context.SaveChangesAsync();
+            return  _context.SaveChanges();
+        }
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if(!this.disposed)
+            {
+                if(disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

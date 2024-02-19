@@ -23,7 +23,7 @@ namespace Infrastructure.Persistence
 
         public async Task<T> AddAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
+            _dbSet.AddAsync(entity);
             return entity;
         }
         public async Task<T> DeleteAsync(T entity)

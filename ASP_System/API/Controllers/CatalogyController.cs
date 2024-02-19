@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Services;
 using Domain.Entities;
+using Domain.Model;
 using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,34 @@ namespace API.Controllers
             return Ok(result);
         }
         [HttpPost]
-        public ActionResult CreateCatalogy(Category catalogy)
+        public async Task<IActionResult> AddCatalogy(CatalogyDTO catalogy)
         {
-            _catalogyService.AddNewCatalogy(catalogy);
-            
+            try
+            {
+                var result = await _catalogyService.AddCatalogy(catalogy);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCatalogyById(int id)
+        {
+            var result = await _catalogyService.GetCatalogyById(id);
+            return Ok(result);
+        }
+        [HttpPut("{Delete}")]
+        public async Task<IActionResult> DeleteCatalogy(int id)
+        {
+            await _catalogyService.DeteleCatalogy(id);
+            return Ok();
+        }
+        [HttpPut("{Update}")]
+        public async Task<IActionResult> UpdateCatalogy(int id,CatalogyDTO catalogy)
+        {
+            await _catalogyService.UpdateCatalogy(id,catalogy);
             return Ok();
         }
     }

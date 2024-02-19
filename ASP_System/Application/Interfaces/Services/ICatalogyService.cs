@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,10 @@ namespace Application.Interfaces.Services
 {
     public interface ICatalogyService
     {
-        Task<IEnumerable<Category>> GetAllCatalogy();
-        void AddNewCatalogy(Category category);
+        Task<IEnumerable<CatalogyDTO>> GetAllCatalogy();
+        Task<CatalogyDTO> AddCatalogy(CatalogyDTO catalogy);
+        Task<CatalogyDTO> GetCatalogyById(int id);
+        Task DeteleCatalogy(int id);
+        Task UpdateCatalogy(int id,CatalogyDTO catalogy);
     }
 }

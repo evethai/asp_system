@@ -40,7 +40,5 @@ namespace Infrastructure.Persistence.Services
             var Artwork = await _unitOfWork.Repository<Artwork>().GetByIdAsync(id);
             return _mapper.Map<ArtworkDTO>(Artwork);
         }
-
-
     }
 }

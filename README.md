@@ -12,7 +12,7 @@ ASP là một nền tảng dành cho các artist có thể chia sẻ các tác p
 3. [Cao Văn Công](https://github.com/caocong2KB6)
 4. [Nguyễn Tấn Đạt](https://github.com/datntse)
 5. [Nguyền Đoàn Anh Duy](https://github.com/SmileeXD)
-6. [Phan Văn Cường]
+6. [Phan Văn Cường](https://github.com/cuongphanse)
 
 
 Copyright © 2024 ASP

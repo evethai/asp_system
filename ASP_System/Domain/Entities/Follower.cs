@@ -13,9 +13,9 @@ namespace Domain.Entities
         //FollowerId	UserId
         [Key]
         public int FollowerId { get; set; }
-        public int? UserId { get; set; }
+        //public int? UserId { get; set; }
 
-        public virtual IdentityUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
     }
 }

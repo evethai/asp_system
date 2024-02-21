@@ -26,12 +26,52 @@ namespace Infrastructure.Persistence.Services
         {
             try
             {
-                var newArtwork = _mapper.Map<Artwork>(artwork);
+                var newArtwork = new Artwork
+                {
+                    Title = artwork.Title,
+                    Description = artwork.Description,
+                    Price = artwork.Price,
+                    ReOrderQuantity = artwork.ReOrderQuantity,
+                    Status = true,
+                    CreateOn = DateTime.Now,
+                    UpdateOn = DateTime.Now
+                };
                 _unitOfWork.Repository<Artwork>().AddAsync(newArtwork);
                 _unitOfWork.Save();
+
+                //Add Artwork Images
+                if (artwork.ImagesUrl != null && artwork.ImagesUrl.Any())
+                {
+                    foreach (var image in artwork.ImagesUrl)
+                    {
+                        var newImage = new ArtworkImage
+                        {
+                            ArtworkId = newArtwork.ArtworkId,
+                            Image = image
+                        };
+                        _unitOfWork.Repository<ArtworkImage>().AddAsync(newImage);
+                        _unitOfWork.Save();
+                    }
+                }
+                //Add Artwork Categories
+                if (artwork.CategoryIds != null && artwork.CategoryIds.Any())
+                {
+                    foreach (var category in artwork.CategoryIds)
+                    {
+                        var newArtworkCategory = new ArtworkHasCategory
+                        {
+                            ArtworkId = newArtwork.ArtworkId,
+                            CategoryId = category
+                        };
+                        _unitOfWork.Repository<ArtworkHasCategory>().AddAsync(newArtworkCategory);
+                        _unitOfWork.Save();
+                    }
+                }
+
+
                 return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Artwork added successfully", Data = artwork });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
             }

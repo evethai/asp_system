@@ -30,6 +30,11 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Gender = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -125,19 +130,18 @@ namespace Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true),
                     CreateOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdateOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: true),
                     ReOrderQuantity = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Artwork", x => x.ArtworkId);
                     table.ForeignKey(
-                        name: "FK_Artwork_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Artwork_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -233,15 +237,14 @@ namespace Infrastructure.Migrations
                 {
                     FollowerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Follower", x => x.FollowerId);
                     table.ForeignKey(
-                        name: "FK_Follower_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Follower_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -252,17 +255,16 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: true),
                     PackageId = table.Column<int>(type: "int", nullable: true),
                     QuantityPost = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Poster", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Poster_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Poster_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -278,7 +280,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ArtworkId = table.Column<int>(type: "int", nullable: true),
+                    ArtworkId = table.Column<int>(type: "int", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -288,7 +290,8 @@ namespace Infrastructure.Migrations
                         name: "FK_Artwork_Image_Artwork_ArtworkId",
                         column: x => x.ArtworkId,
                         principalTable: "Artwork",
-                        principalColumn: "ArtworkId");
+                        principalColumn: "ArtworkId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -322,8 +325,7 @@ namespace Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ArtworkId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -334,8 +336,8 @@ namespace Infrastructure.Migrations
                         principalTable: "Artwork",
                         principalColumn: "ArtworkId");
                     table.ForeignKey(
-                        name: "FK_Like_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Like_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -346,12 +348,11 @@ namespace Infrastructure.Migrations
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ReOrderStatus = table.Column<bool>(type: "bit", nullable: true),
                     ArtworkId = table.Column<int>(type: "int", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -362,8 +363,8 @@ namespace Infrastructure.Migrations
                         principalTable: "Artwork",
                         principalColumn: "ArtworkId");
                     table.ForeignKey(
-                        name: "FK_Order_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Order_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -376,8 +377,7 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NotificationId = table.Column<int>(type: "int", nullable: true),
                     ArtworkId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -388,8 +388,8 @@ namespace Infrastructure.Migrations
                         principalTable: "Artwork",
                         principalColumn: "ArtworkId");
                     table.ForeignKey(
-                        name: "FK_UserNofitication_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_UserNofitication_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -400,9 +400,9 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Artwork_UserId1",
+                name: "IX_Artwork_UserId",
                 table: "Artwork",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Artwork_Image_ArtworkId",
@@ -459,9 +459,9 @@ namespace Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Follower_UserId1",
+                name: "IX_Follower_UserId",
                 table: "Follower",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Like_ArtworkId",
@@ -469,9 +469,9 @@ namespace Infrastructure.Migrations
                 column: "ArtworkId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Like_UserId1",
+                name: "IX_Like_UserId",
                 table: "Like",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_ArtworkId",
@@ -479,9 +479,9 @@ namespace Infrastructure.Migrations
                 column: "ArtworkId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_UserId1",
+                name: "IX_Order_UserId",
                 table: "Order",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Poster_PackageId",
@@ -489,9 +489,9 @@ namespace Infrastructure.Migrations
                 column: "PackageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Poster_UserId1",
+                name: "IX_Poster_UserId",
                 table: "Poster",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserNofitication_ArtworkId",
@@ -504,9 +504,9 @@ namespace Infrastructure.Migrations
                 column: "NotificationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserNofitication_UserId1",
+                name: "IX_UserNofitication_UserId",
                 table: "UserNofitication",
-                column: "UserId1");
+                column: "UserId");
         }
 
         /// <inheritdoc />

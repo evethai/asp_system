@@ -11,11 +11,11 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController : ControllerBase
+    public class ArtworkController : ControllerBase
     {
         private readonly IArtworkService _artworkService;
 
-        public TestController(IArtworkService artworkService)
+        public ArtworkController(IArtworkService artworkService)
         {
             _artworkService = artworkService;
         }
@@ -61,10 +61,17 @@ namespace API.Controllers
         }
 
         [HttpPost("GetArtworkByFilter")]
-        public async Task<IActionResult> GetArtworkByFilter(ArtworkFilterParameterDTO filter)
+        public async Task<IActionResult> GetArtworkByFilter([FromForm]ArtworkFilterParameterDTO filter)
         {
-            var result = await _artworkService.GetArtworkByFilter(filter);
-            return Ok(result);
+            try
+            {
+                var artwork = await _artworkService.GetArtworkByFilter(filter);
+                return Ok(artwork);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
     }

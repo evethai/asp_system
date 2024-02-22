@@ -17,4 +17,12 @@ namespace Domain.Model
         public DateTime? Date { get; set; }
         public bool? IsRead { get; set; }
     }
+
+    public class CreateNotificationDTO
+    {
+        [Required(ErrorMessage = "Title is required")]
+        public string Title { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Description is required")]
+        public string Description { get; set; } = string.Empty;
+    }
 }

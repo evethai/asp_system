@@ -21,9 +21,31 @@ namespace Infrastructure.Persistence.Services
             _mapper = mapper;
         }
 
-        public Task<ResponseDTO> CreateNotification(NotificationDTO noti)
+        public Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var newNotification = new Notification
+                {
+                    Title = noti.Title,
+                    Description = noti.Description,
+                    Date = DateTime.Now,
+                    IsRead = false,
+                };
+                _unitOfWork.Repository<Notification>().AddAsync(newNotification);
+                _unitOfWork.Save();
+                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Notification added successfully", Data = noti });
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
+            }
+        }
+
+        public async Task<IEnumerable<NotificationDTO>> GetAllNotification()
+        {
+            var notiList = await _unitOfWork.Repository<Notification>().GetAllAsync();
+            return _mapper.Map<List<NotificationDTO>>(notiList);
         }
 
         public async Task<NotificationDTO> GetNotificationById(int id)
@@ -32,9 +54,27 @@ namespace Infrastructure.Persistence.Services
             return _mapper.Map<NotificationDTO>(Noti);
         }
 
-        public Task<ResponseDTO> RemoveNotification(NotificationDTO noti)
+        public async Task<ResponseDTO> RemoveNotification(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var existingNotification = await _unitOfWork.Repository<Notification>().GetByIdAsync(id);
+
+                if (existingNotification == null)
+                {
+                    return new ResponseDTO { IsSuccess = false, Message = "Notification not found" };
+                }
+
+                _unitOfWork.Repository<Notification>().DeleteAsync(existingNotification);
+                _unitOfWork.Save();
+
+                return new ResponseDTO { IsSuccess = true, Message = "Notification removed successfully" };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO { IsSuccess = false, Message = ex.Message };
+            }
         }
+
     }
 }

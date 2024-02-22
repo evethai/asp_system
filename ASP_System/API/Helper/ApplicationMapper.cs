@@ -12,6 +12,7 @@ namespace API.Helper
             CreateMap<Artwork,ArtworkAddDTO>().ReverseMap();
             CreateMap<Artwork,ArtworkUpdateDTO>().ReverseMap();
             CreateMap<Notification, NotificationDTO>().ReverseMap();
+            CreateMap<Notification, CreateNotificationDTO>().ReverseMap();
         }
     }
 }

@@ -1,0 +1,85 @@
+﻿using Application.Interfaces.Services;
+using Domain.Model;
+using Infrastructure.Persistence.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PosterController : ControllerBase
+    {
+        private readonly IPosterService _posterService;
+
+        public PosterController(IPosterService posterService)
+        {
+            _posterService = posterService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var result = await _posterService.GetAllPoster();
+            return Ok(result);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddPoster(PosterDTO post)
+        {
+            try
+            {
+                var result = await _posterService.AddPoster(post);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPostById(int id)
+        {
+            var result = await _posterService.GetPosterById(id);
+            return Ok(result);
+        }
+        [HttpPut("Delete")]
+        public async Task<IActionResult> DeletePost(int id)
+        {
+
+            try
+            {
+                var result = await _posterService.DetelePost(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        //[HttpPut("Update")]
+        //public async Task<IActionResult> UpdatePost(int id, PosterDTO post)
+        //{
+        //    try
+        //    {
+        //        var result = await _posterService.UpdatePost(id, post);
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
+        [HttpPut("QuantityExtensionPost")]
+        public async Task<IActionResult> QuantityExtensionPost(int id, int post)
+        {
+            try
+            {
+                var result = await _posterService.QuantityExtensionPost(id, post);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+    }
+}

@@ -11,9 +11,9 @@ namespace Application.Interfaces.Services
     public interface ICatalogyService
     {
         Task<IEnumerable<CatalogyDTO>> GetAllCatalogy();
-        Task<CatalogyDTO> AddCatalogy(CatalogyDTO catalogy);
+        Task<ResponseDTO> AddCatalogy(CatalogyAddDTO catalogy);
         Task<CatalogyDTO> GetCatalogyById(int id);
-        Task DeteleCatalogy(int id);
-        Task UpdateCatalogy(int id,CatalogyDTO catalogy);
+        Task<ResponseDTO> DeteleCatalogy(int id);
+        Task <ResponseDTO> UpdateCatalogy(int id, CatalogyDTO catalogy);
     }
 }

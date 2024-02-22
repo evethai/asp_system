@@ -1,7 +1,5 @@
 ﻿using Application.Interfaces.Services;
-using Domain.Entities;
 using Domain.Model;
-using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,26 +7,26 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CatalogyController : ControllerBase
+    public class PackageController : ControllerBase
     {
-        private readonly ICatalogyService _catalogyService;
+        private readonly IPackageService _packageService;
 
-        public CatalogyController(ICatalogyService catalogyService)
+        public PackageController(IPackageService packageService)
         {
-            _catalogyService = catalogyService;
+            _packageService = packageService;
         }
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _catalogyService.GetAllCatalogy();
+            var result = await _packageService.GetAllPackage();
             return Ok(result);
         }
         [HttpPost]
-        public async Task<IActionResult> AddCatalogy(CatalogyAddDTO catalogy)
+        public async Task<IActionResult> AddPackage(PackageAddDTO package)
         {
             try
             {
-                var result = await _catalogyService.AddCatalogy(catalogy);
+                var result = await _packageService.AddPackage(package);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -37,18 +35,18 @@ namespace API.Controllers
             }
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCatalogyById(int id)
+        public async Task<IActionResult> GetPackageById(int id)
         {
-            var result = await _catalogyService.GetCatalogyById(id);
+            var result = await _packageService.GetPackageById(id);
             return Ok(result);
         }
         [HttpPut("Delete")]
-        public async Task<IActionResult> DeleteCatalogy(int id)
+        public async Task<IActionResult> DeletePackage(int id)
         {
 
             try
             {
-                var result = await _catalogyService.DeteleCatalogy(id);
+                var result = await _packageService.DetelePackage(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -57,12 +55,12 @@ namespace API.Controllers
             }
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateCatalogy(int id,CatalogyDTO catalogy)
+        public async Task<IActionResult> UpdatePackage(int id, PackageDTO package)
         {
 
             try
             {
-                var result = await _catalogyService.UpdateCatalogy(id,catalogy);
+                var result = await _packageService.UpdatePackage(id,package);
                 return Ok(result);
             }
             catch (Exception ex)

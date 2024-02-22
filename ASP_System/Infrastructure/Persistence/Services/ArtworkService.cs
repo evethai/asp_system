@@ -89,7 +89,6 @@ namespace Infrastructure.Persistence.Services
         {
             try
             {
-
                 var existingArtwork = _unitOfWork.Repository<Artwork>().GetByIdAsync(artwork.ArtworkId);
                 if (existingArtwork == null)
                 {

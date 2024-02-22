@@ -15,7 +15,6 @@ namespace Infrastructure.Persistence.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly object catalogy;
 
         public CatalogyService(IUnitOfWork unitOfWork, IMapper mapper)
         {
@@ -23,22 +22,41 @@ namespace Infrastructure.Persistence.Services
             _mapper = mapper;
         }
 
-        public Task<CatalogyDTO> AddCatalogy(CatalogyDTO catalogy)
+        public Task<ResponseDTO> AddCatalogy(CatalogyAddDTO catalogy)
         {
-            var newCatalogy = _mapper.Map<Category>(catalogy);
-            _unitOfWork.Repository<Category>().AddAsync(newCatalogy);
-            _unitOfWork.Save();
-            return Task.FromResult(catalogy);
+            try
+            {
+                var newCatalogy = _mapper.Map<Category>(catalogy);
+                _unitOfWork.Repository<Category>().AddAsync(newCatalogy);
+                _unitOfWork.Save();
+                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Catalogy added successfully", Data = catalogy });
+            }catch (Exception ex)
+            {
+                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
+            }
         }
 
-        public async Task DeteleCatalogy(int id)
+        public Task<ResponseDTO> DeteleCatalogy(int id)
         {
-            var result = _unitOfWork.Repository<CatalogyDTO>().GetByIdAsync(id);
-            if (result!= null)
+            try
+            {   
+                var checkId = _unitOfWork.Repository<Category>().GetQueryable().FirstOrDefault(c => c.Id == id);
+                if (checkId == null)
+                {
+                    return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Catalogy not found" });
+                }
+                else
+                {
+                    var update = _mapper.Map<Category>(checkId);
+                    update.Status = false;
+                    _unitOfWork.Repository<Category>().UpdateAsync(update);
+                    _unitOfWork.Save();
+                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Catalogy delete successfully", Data = checkId });
+                }
+            }
+            catch (Exception ex)
             {
-                var status = _mapper.Map<Category>(result);
-                status.Status = false;
-                await _unitOfWork.Repository<Category>().UpdateAsync(status);
+                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
             }
         }
 
@@ -54,13 +72,25 @@ namespace Infrastructure.Persistence.Services
             return _mapper.Map<CatalogyDTO>(result);
         }
 
-        public async Task UpdateCatalogy(int id, CatalogyDTO catalogy)
+        public  Task<ResponseDTO> UpdateCatalogy(int id,CatalogyDTO catalogy)
         {
-            if (id == catalogy.Id)
+            try
             {
-                var update = _mapper.Map<Category>(catalogy);
-                await _unitOfWork.Repository<Category>().UpdateAsync(update);
-                _unitOfWork.Save();
+                if (id != catalogy.Id)
+                {
+                    return  Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Catalogy not found" });
+                }
+                else
+                {
+                    var update = _mapper.Map<Category>(catalogy);
+                    _unitOfWork.Repository<Category>().UpdateAsync(update);
+                    _unitOfWork.Save();
+                    return  Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Catalogy updated successfully", Data = catalogy});
+                }
+            }
+            catch (Exception ex)
+            {
+                return  Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
             }
         }
     }

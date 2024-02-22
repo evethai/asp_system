@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,43 @@ namespace Domain.Model
 {
     public class OrderDTO
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
+        [Key]
+        [Required(ErrorMessage = "Id is required")]
+        public int OrderId { get; set; }
+        public int? UserId { get; set; }
+        public DateTime Date { get; set; }
+        public string? Code { get; set; }
+        public int? ArtworkId { get; set; }
+        public bool? ReOrderStatus { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public DateTime? UpdateOn { get; set; }
     }
+    public class OrderDeleteDTO
+    {
+        [Key]
+        [Required(ErrorMessage = "Id is required")]
+        public int OrderId { get; set; }
+    }
+    public class OrderUpdateDTO
+    {
+        [Key]
+        [Required(ErrorMessage = "Id is required")]
+        public int OrderId { get; set; }
+        public int? UserId { get; set; }
+        public DateTime Date { get; set; }
+        public string? Code { get; set; }
+        public int? ArtworkId { get; set; }
+        public bool? ReOrderStatus { get; set; }
+        public DateTime? UpdateOn { get; set; }
+    }
+    public class OrderCreateDTO
+    {
+        [Key]
+        public int? UserId { get; set; }
+        public DateTime Date { get; set; }
+        public string? Code { get; set; }
+        public int? ArtworkId { get; set; }
+        public bool? ReOrderStatus { get; set; }
+    }
+    
 }

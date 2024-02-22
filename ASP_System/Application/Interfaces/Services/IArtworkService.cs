@@ -6,6 +6,8 @@ namespace Application.Interfaces.Services
     {
         Task<IEnumerable<ArtworkDTO>> GetAllArtworks();
         Task<ArtworkDTO> GetArtworkById(int id);
-        Task<ArtworkDTO> AddArtwork(ArtworkDTO artwork);
+        Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork);
+        Task<ResponseDTO> UpdateArtwork(ArtworkDTO artwork);
+        Task<IEnumerable<ArtworkDTO>> GetArtworkByFilter(ArtworkFilterParameterDTO filter);
     }
 }

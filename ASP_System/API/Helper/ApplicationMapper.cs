@@ -8,9 +8,8 @@ namespace API.Helper
     {
         public ApplicationMapper()
         {
-           CreateMap<Artwork,ArtworkDTO>().ReverseMap();
-            CreateMap<Category, CatalogyDTO>().ReverseMap();
-
+            CreateMap<Artwork,ArtworkDTO>().ReverseMap();
+            CreateMap<Artwork,ArtworkAddDTO>().ReverseMap();
         }
     }
 }

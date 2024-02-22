@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,12 +9,28 @@ namespace Domain.Model
 {
     public class ArtworkDTO
     {
+        [Key]
+        [Required(ErrorMessage = "Id is required")]
         public int ArtworkId { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Title is required")]
+        public string Title { get; set; }
+        public string Description { get; set; }
+        [Required(ErrorMessage = "Price is required")]
         public double? Price { get; set; }
         public int? UserId { get; set; }
         public DateTime? CreateOn { get; set; }
+        public DateTime? UpdateOn { get; set; }
+        public bool? Status { get; set; }
+        public int? ReOrderQuantity { get; set; }
+    }
+    public class ArtworkAddDTO
+    {
+        [Required(ErrorMessage = "Title is required")]
+        public string Title { get; set; }
+        public string Description { get; set; }
+        [Required(ErrorMessage = "Price is required")]
+        public double? Price { get; set; }
+        public int? UserId { get; set; }
         public DateTime? UpdateOn { get; set; }
         public bool? Status { get; set; }
         public int? ReOrderQuantity { get; set; }

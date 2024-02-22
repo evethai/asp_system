@@ -32,7 +32,7 @@ namespace API.Controllers
         }
         //post add
         [HttpPost ("AddArtwork")]
-        public async Task<IActionResult> AddArtwork(ArtworkDTO artwork)
+        public async Task<IActionResult> AddArtwork(ArtworkAddDTO artwork)
         {
             try
             {
@@ -42,6 +42,28 @@ namespace API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+        //put update
+        [HttpPut("UpdateArtwork")]
+        public async Task<IActionResult> UpdateArtwork(ArtworkDTO artwork)
+        {
+            try
+            {
+                var result = await _artworkService.UpdateArtwork(artwork);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("GetArtworkByFilter")]
+        public async Task<IActionResult> GetArtworkByFilter(ArtworkFilterParameterDTO filter)
+        {
+            var result = await _artworkService.GetArtworkByFilter(filter);
+            return Ok(result);
         }
     }
 }

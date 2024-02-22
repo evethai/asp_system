@@ -14,9 +14,9 @@ namespace Domain.Entities
         [Key]
         public int Id { get; set; }
         public int? ArtworkId { get; set; }
-        public int? UserId { get; set; }
+        //public int? UserId { get; set; }
 
         public Artwork Artwork { get; set; }
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

@@ -4,6 +4,8 @@ using Domain.Entities;
 using Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace API.Controllers
 {
@@ -12,11 +14,13 @@ namespace API.Controllers
     public class TestController : ControllerBase
     {
         private readonly IArtworkService _artworkService;
+
         public TestController(IArtworkService artworkService)
         {
             _artworkService = artworkService;
         }
 
+        //get all
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -32,7 +36,7 @@ namespace API.Controllers
         }
         //post add
         [HttpPost ("AddArtwork")]
-        public async Task<IActionResult> AddArtwork(ArtworkAddDTO artwork)
+        public async Task<IActionResult> AddArtwork([FromForm] ArtworkAddDTO artwork)
         {
             try
             {
@@ -46,17 +50,14 @@ namespace API.Controllers
 
         //put update
         [HttpPut("UpdateArtwork")]
-        public async Task<IActionResult> UpdateArtwork(ArtworkDTO artwork)
+        public async Task<IActionResult> UpdateArtwork(ArtworkUpdateDTO artwork)
         {
-            try
+            var reponse = await _artworkService.UpdateArtwork(artwork);
+            if (reponse.IsSuccess)
             {
-                var result = await _artworkService.UpdateArtwork(artwork);
-                return Ok(result);
+                return Ok(reponse);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return BadRequest(reponse);
         }
 
         [HttpPost("GetArtworkByFilter")]
@@ -65,5 +66,6 @@ namespace API.Controllers
             var result = await _artworkService.GetArtworkByFilter(filter);
             return Ok(result);
         }
+
     }
 }

@@ -26,12 +26,52 @@ namespace Infrastructure.Persistence.Services
         {
             try
             {
-                var newArtwork = _mapper.Map<Artwork>(artwork);
+                var newArtwork = new Artwork
+                {
+                    Title = artwork.Title,
+                    Description = artwork.Description,
+                    Price = artwork.Price,
+                    ReOrderQuantity = artwork.ReOrderQuantity,
+                    Status = true,
+                    CreateOn = DateTime.Now,
+                    UpdateOn = DateTime.Now
+                };
                 _unitOfWork.Repository<Artwork>().AddAsync(newArtwork);
                 _unitOfWork.Save();
+
+                //Add Artwork Images
+                if (artwork.ImagesUrl != null && artwork.ImagesUrl.Any())
+                {
+                    foreach (var image in artwork.ImagesUrl)
+                    {
+                        var newImage = new ArtworkImage
+                        {
+                            ArtworkId = newArtwork.ArtworkId,
+                            Image = image
+                        };
+                        _unitOfWork.Repository<ArtworkImage>().AddAsync(newImage);
+                        _unitOfWork.Save();
+                    }
+                }
+                //Add Artwork Categories
+                if (artwork.CategoryIds != null && artwork.CategoryIds.Any())
+                {
+                    foreach (var category in artwork.CategoryIds)
+                    {
+                        var newArtworkCategory = new ArtworkHasCategory
+                        {
+                            ArtworkId = newArtwork.ArtworkId,
+                            CategoryId = category
+                        };
+                        _unitOfWork.Repository<ArtworkHasCategory>().AddAsync(newArtworkCategory);
+                        _unitOfWork.Save();
+                    }
+                }
+
+
                 return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Artwork added successfully", Data = artwork });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
             }
@@ -85,29 +125,36 @@ namespace Infrastructure.Persistence.Services
             return _mapper.Map<ArtworkDTO>(Artwork);
         }
 
-        public  Task<ResponseDTO> UpdateArtwork(ArtworkDTO artwork)
+        public   async Task<ResponseDTO> UpdateArtwork(ArtworkUpdateDTO artwork)
         {
             try
             {
-                var existingArtwork = _unitOfWork.Repository<Artwork>().GetByIdAsync(artwork.ArtworkId);
+                var existingArtwork = _unitOfWork.Repository<Artwork>().GetQueryable().FirstOrDefault(a => a.ArtworkId == artwork.ArtworkId);
                 if (existingArtwork == null)
                 {
-                    return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Artwork not found" });
+                    return (new ResponseDTO { IsSuccess = false, Message = "Artwork not found" });
                 }
-                else
-                {
-                    var newArtwork = _mapper.Map<Artwork>(artwork);
-
-                    _unitOfWork.Repository<Artwork>().UpdateAsync(newArtwork);
-                    _unitOfWork.Save();
-
-                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Artwork updated successfully", Data = artwork });
-                }
+                existingArtwork = submitCourseChange(existingArtwork, artwork);
+                await _unitOfWork.Repository<Artwork>().UpdateAsync(existingArtwork);
+                _unitOfWork.Save();
+                return (new ResponseDTO { IsSuccess = true, Message = "Artwork updated successfully", Data = artwork });
             }
             catch (Exception ex)
             {
-                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
+                return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
             }
+        }
+
+        private Artwork submitCourseChange(Artwork existingArtwork, ArtworkUpdateDTO artwork)
+        {
+            existingArtwork.Title = artwork.Title;
+            existingArtwork.Description = artwork.Description;
+            existingArtwork.Price = artwork.Price;
+            existingArtwork.ReOrderQuantity = artwork.ReOrderQuantity;
+            existingArtwork.Status = artwork.Status;
+            existingArtwork.UpdateOn = DateTime.Now;
+
+            return existingArtwork;
         }
 
     }

@@ -9,7 +9,6 @@ namespace Domain.Model
     public class ArtworkFilterParameterDTO
     {
         public string Title { get; set; } = string.Empty;
-        //public List<int> CategoryIds { get; set; } = new List<int>();
         public double? MinPrice { get; set; }
         public double? MaxPrice { get; set; }
         public int PageNumber { get; set; } = 1;

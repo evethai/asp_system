@@ -8,9 +8,10 @@ namespace API.Helper
     {
         public ApplicationMapper()
         {
-            CreateMap<Artwork,ArtworkDTO>().ReverseMap();
-            CreateMap<Artwork,ArtworkAddDTO>().ReverseMap();
-            CreateMap<Artwork,ArtworkUpdateDTO>().ReverseMap();
+            CreateMap<Artwork, ArtworkDTO>().ReverseMap();
+            CreateMap<Artwork, ArtworkAddDTO>().ReverseMap();
+            CreateMap<Artwork, ArtworkUpdateDTO>().ReverseMap();
+            CreateMap<ArtworkImage, ArtworkImageDTO>().ReverseMap();
             CreateMap<Order,OrderDTO>().ReverseMap();
             CreateMap<Order,OrderCreateDTO>().ReverseMap();
             CreateMap<Order,OrderUpdateDTO>().ReverseMap();

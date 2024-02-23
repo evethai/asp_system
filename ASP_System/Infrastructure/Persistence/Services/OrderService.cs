@@ -30,7 +30,7 @@ namespace Infrastructure.Persistence.Services
                     Date = order.Date,
                     Code = order.Code,
                     ReOrderStatus = order.ReOrderStatus,
-
+                    ArtworkId = order.ArtworkId
                 };
                 _unitOfWork.Repository<Order>().AddAsync(newOrder);
                 _unitOfWork.Save();
@@ -48,6 +48,63 @@ namespace Infrastructure.Persistence.Services
             return _mapper.Map<OrderDTO>(Order);
         }
 
+        public async Task<ResponseDTO> UpdateOrder(OrderUpdateDTO order)
+        {
+            try
+            {
+                var existingOrder = _unitOfWork.Repository<Order>().GetQueryable().FirstOrDefault(a => a.OrderId == order.OrderId);
+                if (existingOrder == null)
+                {
+                    return (new ResponseDTO { IsSuccess = false, Message = "Order not found" });
+                }
+                existingOrder = submitCourseChange(existingOrder, order);
+                await _unitOfWork.Repository<Order>().UpdateAsync(existingOrder);
+                _unitOfWork.Save();
+                return (new ResponseDTO { IsSuccess = true, Message = "Order updated successfully", Data = order });
+            }
+            catch (Exception ex)
+            {
+                return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
+            }
+        }
+        private Order submitCourseChange(Order existingOrder, OrderUpdateDTO order)
+        {
+            existingOrder.Code = order.Code;
+            existingOrder.ArtworkId = order.ArtworkId;
+            existingOrder.Date = order.Date;    
+            existingOrder.ReOrderStatus = order.ReOrderStatus;
+            
+            return existingOrder;
+        }
 
+        public async Task<ResponseDTO> DeleteOrder(OrderDeleteDTO order)
+        {
+            try
+            {
+                var existingOrder = _unitOfWork.Repository<Order>().GetQueryable().FirstOrDefault(a => a.OrderId == order.OrderId);
+                if (existingOrder == null)
+                {
+                    return (new ResponseDTO { IsSuccess = false, Message = "Order not found" });
+                }
+                existingOrder = submitCourse(existingOrder, order);
+                await _unitOfWork.Repository<Order>().DeleteAsync(existingOrder);
+                _unitOfWork.Save();
+                return (new ResponseDTO { IsSuccess = true, Message = "Order deleted successfully", Data = order });
+            }
+            catch (Exception ex)
+            {
+                return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
+            }
+        }
+
+        private Order submitCourse(Order existingOrder, OrderDeleteDTO order)
+        {
+            existingOrder.Code = order.Code;
+            existingOrder.ArtworkId = order.ArtworkId;
+            existingOrder.Date = order.Date;
+            existingOrder.ReOrderStatus = order.ReOrderStatus;
+
+            return existingOrder;
+        }
     }
 }

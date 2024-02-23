@@ -12,36 +12,36 @@ namespace Domain.Model
         [Key]
         [Required(ErrorMessage = "Id is required")]
         public int OrderId { get; set; }
-        public int? UserId { get; set; }
         public DateTime Date { get; set; }
         public string? Code { get; set; }
         public int? ArtworkId { get; set; }
         public bool? ReOrderStatus { get; set; }
-        public DateTime? CreateOn { get; set; }
-        public DateTime? UpdateOn { get; set; }
     }
     public class OrderDeleteDTO
     {
         [Key]
         [Required(ErrorMessage = "Id is required")]
         public int OrderId { get; set; }
+        public DateTime Date { get; set; }
+        public string? Code { get; set; }
+        public int? ArtworkId { get; set; }
+        public bool? ReOrderStatus { get; set; }
     }
     public class OrderUpdateDTO
     {
         [Key]
         [Required(ErrorMessage = "Id is required")]
         public int OrderId { get; set; }
-        public int? UserId { get; set; }
         public DateTime Date { get; set; }
         public string? Code { get; set; }
         public int? ArtworkId { get; set; }
         public bool? ReOrderStatus { get; set; }
-        public DateTime? UpdateOn { get; set; }
     }
     public class OrderCreateDTO
     {
         [Key]
-        public int? UserId { get; set; }
+        [Required(ErrorMessage = "Id is required")]
+        public int OrderId { get; set; }
         public DateTime Date { get; set; }
         public string? Code { get; set; }
         public int? ArtworkId { get; set; }

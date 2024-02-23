@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Services
 {
-    internal class ILikeService
+    public interface ILikeService
     {
     }
 }

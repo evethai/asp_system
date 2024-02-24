@@ -12,10 +12,11 @@ namespace API.Helper
             CreateMap<Artwork, ArtworkAddDTO>().ReverseMap();
             CreateMap<Artwork, ArtworkUpdateDTO>().ReverseMap();
             CreateMap<ArtworkImage, ArtworkImageDTO>().ReverseMap();
-            CreateMap<Order,OrderDTO>().ReverseMap();
-            CreateMap<Order,OrderCreateDTO>().ReverseMap();
-            CreateMap<Order,OrderUpdateDTO>().ReverseMap();
-            CreateMap<Order,OrderDeleteDTO>().ReverseMap();
+            CreateMap<Order, OrderDTO>().ReverseMap();
+            CreateMap<Order, OrderCreateDTO>().ReverseMap();
+            CreateMap<Order, OrderUpdateDTO>().ReverseMap();
+            CreateMap<Order, OrderDeleteDTO>().ReverseMap();
+            CreateMap<Like, LikeDTO>().ReverseMap();
         }
     }
 }

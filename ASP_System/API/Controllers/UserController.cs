@@ -1,7 +1,10 @@
 ﻿using Application.Interfaces.Services;
+using Domain.Entities;
 using Domain.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -10,10 +13,11 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserServices _userServices;
-
-        public UserController(IUserServices userServices)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public UserController(IUserServices userServices, UserManager<ApplicationUser> userManager)
         {
             _userServices = userServices;
+            _userManager = userManager;
         }
 
         [HttpPost("SignUp")]
@@ -31,13 +35,19 @@ namespace API.Controllers
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn(UserSignInDTO signInModel)
         {
-            var result = await _userServices.SignInAsync(signInModel);
+            
 
+            var result = await _userServices.SignInAsync(signInModel);
+            
             if (string.IsNullOrEmpty(result))
             {
                 return Unauthorized();
+            
             }
+            //var user =  _userManager.GetUserAsync(HttpContext.User);
+            //var userId = user.Id;
 
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value
             return Ok(result);
         }
     }

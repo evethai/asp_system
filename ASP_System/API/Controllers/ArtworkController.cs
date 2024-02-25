@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using Domain.Entities;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
@@ -11,6 +12,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class ArtworkController : ControllerBase
     {
         private readonly IArtworkService _artworkService;

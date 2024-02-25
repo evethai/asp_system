@@ -14,7 +14,10 @@ namespace Domain.Entities
         public DateTime Birthday { get; set; }
         public bool Gender { get; set; }
         public bool Status { get; set; }
-        
+        public bool IsActive { get; set; } = false;
+        public String? RefreshToken { get; set; }
+        public DateTime? DateExpireRefreshToken { get; set; }
+
         public virtual ICollection<UserNofitication> UserNofitications { get; set;}
         public virtual ICollection<Artwork> Artworks { get; set; }
         public virtual ICollection<Poster> Posters { get; set; }

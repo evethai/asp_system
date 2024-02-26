@@ -1,4 +1,5 @@
-﻿using Domain.Model;
+﻿using Domain.Entities;
+using Domain.Model;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Application.Interfaces.Services
     public interface IUserServices
     {
         public Task<IdentityResult> SignUpAsync(UserSignUpDTO model);
-        public Task<string> SignInAsync(UserSignInDTO model);
+        //public Task<SignInResult> SignInAsync(UserSignInDTO model);
+        public Task<ApplicationUser> SignInAsync(UserSignInDTO model);
     }
 }

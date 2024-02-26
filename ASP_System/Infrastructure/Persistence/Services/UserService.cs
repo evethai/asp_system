@@ -1,14 +1,20 @@
-﻿using Application.Interfaces.Repositories;
+﻿using API.Helper;
+using Application.Interfaces;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Model;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,45 +23,40 @@ namespace Infrastructure.Persistence.Services
 {
     public class UserService : IUserServices
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly IConfiguration configuration;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _configuration;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
         public UserService() { }
-        public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration,
+            RoleManager<IdentityRole> roleManager)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.configuration = configuration;
+            this._userManager = userManager;
+            this._signInManager = signInManager;
+            this._configuration = configuration;
+            this._roleManager = roleManager;
         }
 
-        public async Task<string> SignInAsync(UserSignInDTO model)
+        public async Task<ApplicationUser> SignInAsync(UserSignInDTO model)
         {
-            var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-
-            if (!result.Succeeded)
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            if (result.Succeeded)
             {
-                return string.Empty;
+                return await _userManager.FindByEmailAsync(model.Email);
+               
             }
-
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, model.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
-
-            var token = new JwtSecurityToken(
-                issuer: configuration["JWT:ValidIssuer"],
-                audience: configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(20),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return null;
         }
+
+
+        //public async Task<SignInResult> SignInAsync(UserSignInDTO model)
+        //{
+        //    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+        //    return result;
+        //}
 
         public async Task<IdentityResult> SignUpAsync(UserSignUpDTO model)
         {
@@ -67,7 +68,17 @@ namespace Infrastructure.Persistence.Services
                 UserName = model.Email
             };
 
-            return await userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if(result.Succeeded)
+            {
+                if (!await _roleManager.RoleExistsAsync(AppRole.Customer))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(AppRole.Customer));
+                }
+                await _userManager.AddToRoleAsync(user, AppRole.Customer);
+            }
+            return result;
         }
+
     }
 }

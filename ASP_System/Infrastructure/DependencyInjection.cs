@@ -24,6 +24,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IArtworkService, ArtworkService>();
+        services.AddScoped<IArtworkImageService, ArtworkImageService>();
         services.AddScoped<IUserServices, UserService>();
 
         return services;

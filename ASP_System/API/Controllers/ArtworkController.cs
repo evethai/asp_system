@@ -21,8 +21,8 @@ namespace API.Controllers
         }
 
         //get all
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
             var result = await _artworkService.GetAllArtworks();
             return Ok(result);

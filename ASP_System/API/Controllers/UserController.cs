@@ -1,6 +1,9 @@
-﻿using Application.Interfaces.Services;
+﻿using API.Service;
+using Application.Interfaces.Services;
+using Domain.Entities;
 using Domain.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -10,10 +13,13 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserServices _userServices;
-
-        public UserController(IUserServices userServices)
+        private readonly ICurrentUserService _currentUserService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public UserController(IUserServices userServices,ICurrentUserService userService, UserManager<ApplicationUser> userManager)
         {
+            _currentUserService = userService;
             _userServices = userServices;
+            _userManager = userManager;
         }
 
         [HttpPost("SignUp")]
@@ -33,12 +39,16 @@ namespace API.Controllers
         {
             var result = await _userServices.SignInAsync(signInModel);
 
+            var user = _userManager.GetUserAsync(User);
+            var userId = user.Id;
+
             if (string.IsNullOrEmpty(result))
             {
+                
                 return Unauthorized();
             }
 
-            return Ok(result);
+            return Ok(new {token = result, id = userId});
         }
     }
 }

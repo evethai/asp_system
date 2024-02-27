@@ -12,11 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:ASP_System/Infrastructure/Migrations/20240220012931_DbInit.Designer.cs
-    [Migration("20240220012931_DbInit")]
-========
-    [Migration("20240221141201_DbInit")]
->>>>>>>> da9c988e95c4625fcb22da9a531cd27b6d53aeaf:ASP_System/Infrastructure/Migrations/20240221141201_DbInit.Designer.cs
+    [Migration("20240223165603_DbInit")]
     partial class DbInit
     {
         /// <inheritdoc />
@@ -44,6 +40,9 @@ namespace Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DateExpireRefreshToken")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -56,6 +55,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Gender")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -84,6 +86,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

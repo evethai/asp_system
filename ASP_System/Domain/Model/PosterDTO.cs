@@ -19,12 +19,10 @@ namespace Domain.Model
 
         public Package Package { get; set; }
         [Required(ErrorMessage = "UserId is required")]
-        public IdentityUser User { get; set; }
+        public string User { get; set; }
     }
     public class PosterAddDTO
     {
         public int? PackageId { get; set; }
-        public int? QuantityPost { get; set; }
-        public int UserId { get; set; }
     }
 }

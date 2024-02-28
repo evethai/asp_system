@@ -18,35 +18,38 @@ namespace Infrastructure.Persistence.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PosterService(IUnitOfWork unitOfWork, IMapper mapper)
+        public PosterService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> user)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = user;
         }
 
-        public Task<ResponseDTO> AddPoster(PosterDTO post)
+        public async Task<ResponseDTO> AddPoster(PosterAddDTO post, string UserId)
         {
             try
             {
+                var user = await _userManager.FindByIdAsync(UserId);
                 var checkId = _unitOfWork.Repository<Package>().GetQueryable().FirstOrDefault(c => c.Id == post.PackageId);
-                if (checkId != null)
+                if (checkId != null || user !=null)
                 {
                     var newPost = _mapper.Map<Poster>(post);
-                    newPost.User = null;
-                    newPost.QuantityPost = newPost.QuantityPost + checkId.Quantity;
+                    newPost.User = user;                   
+                    newPost.QuantityPost = checkId.Quantity;
                     _unitOfWork.Repository<Poster>().AddAsync(newPost);
                     _unitOfWork.Save();
-                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Poster added successfully", Data = post });
+                   return new ResponseDTO { IsSuccess = true, Message = "Poster added successfully", Data = post };
                 }
                 else
                 {
-                    return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Poster added fail Package" });
+                  return  new ResponseDTO { IsSuccess = false, Message = "Poster added fail Package" };
                 }
             }
             catch (Exception ex)
             {
-                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
+                 return new ResponseDTO { IsSuccess = false, Message = ex.Message };
             }
         }
 
@@ -67,7 +70,7 @@ namespace Infrastructure.Persistence.Services
            return _mapper.Map<PosterDTO>(result);
         }
 
-        public Task<ResponseDTO> QuantityExtensionPost(int PackageId, int PostId) // Gia hạn thêm khi hết gói cước Post bài
+        public Task<ResponseDTO> QuantityExtensionPost(int PackageId, int PostId, string UserId) // Gia hạn thêm khi hết gói cước Post bài
         {
             try
             {

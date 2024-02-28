@@ -3,6 +3,7 @@ using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,19 @@ namespace Infrastructure.Persistence.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ArtworkService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public ArtworkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
-        public Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork)
+        public Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork, string UserId)
         {
             try
             {
+                var user = _userManager.FindByIdAsync(UserId).Result;
                 var newArtwork = new Artwork
                 {
                     Title = artwork.Title,
@@ -35,7 +39,8 @@ namespace Infrastructure.Persistence.Services
                     ReOrderQuantity = artwork.ReOrderQuantity,
                     Status = true,
                     CreateOn = DateTime.Now,
-                    UpdateOn = DateTime.Now
+                    UpdateOn = DateTime.Now,
+                    User = user
                 };
                 _unitOfWork.Repository<Artwork>().AddAsync(newArtwork);
                 _unitOfWork.Save();
@@ -82,7 +87,14 @@ namespace Infrastructure.Persistence.Services
         public async Task<IEnumerable<ArtworkDTO>> GetAllArtworks()
         {
             var ArtworkList = await _unitOfWork.Repository<Artwork>().GetAllAsync();
-            return _mapper.Map<List<ArtworkDTO>>(ArtworkList);
+            var ArtworkDTOList = _mapper.Map<List<ArtworkDTO>>(ArtworkList);
+            foreach (var artwork in ArtworkDTOList)
+            {
+                artwork.ImageUrl = await _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.Image).ToListAsync();
+                artwork.UserId= await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.User.Id).FirstOrDefaultAsync();
+            }
+
+            return ArtworkDTOList;
         }
 
         public async Task<IEnumerable<ArtworkDTO>> GetArtworkByFilter(ArtworkFilterParameterDTO filter)
@@ -126,7 +138,11 @@ namespace Infrastructure.Persistence.Services
         public async Task<ArtworkDTO> GetArtworkById(int id)
         {
             var Artwork = await _unitOfWork.Repository<Artwork>().GetByIdAsync(id);
-            return _mapper.Map<ArtworkDTO>(Artwork);
+            ArtworkDTO artworkDTO = _mapper.Map<ArtworkDTO>(Artwork);
+            artworkDTO.ImageUrl = await _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artworkDTO.ArtworkId).Select(a => a.Image).ToListAsync();
+            artworkDTO.UserId = await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == id).Select(a => a.User.Id).FirstOrDefaultAsync();
+
+            return artworkDTO;
         }
 
         public   async Task<ResponseDTO> UpdateArtwork(ArtworkUpdateDTO artwork)
@@ -161,6 +177,11 @@ namespace Infrastructure.Persistence.Services
             return existingArtwork;
         }
 
+        public async Task<string> GetUserIdByArtworkId(int id)
+        {
+            var user = await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == id).Select(a => a.User.Id).FirstOrDefaultAsync();
+            return user;
+        }
     }
     public static class ExpressionExtensions
     {

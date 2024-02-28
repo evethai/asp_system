@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -84,39 +85,42 @@ namespace Infrastructure.Persistence.Services
             return _mapper.Map<List<ArtworkDTO>>(ArtworkList);
         }
 
-        public  async Task<IEnumerable<ArtworkDTO>> GetArtworkByFilter(ArtworkFilterParameterDTO filter)
+        public async Task<IEnumerable<ArtworkDTO>> GetArtworkByFilter(ArtworkFilterParameterDTO filter)
         {
-            try
+            var filterExpression = BuildFilterExpression(filter);
+
+            
+            var artworks = await _unitOfWork.Repository<Artwork>().GetByConditionAsync(
+                filter: filterExpression,
+                orderBy: q => q.OrderBy(a => a.ArtworkId), // Example ordering by ID
+                pageIndex: filter.PageNumber - 1,   // Adjusting to zero-based index
+                pageSize: filter.PageSize
+            );
+
+            return _mapper.Map<List<ArtworkDTO>>(artworks);
+        }
+
+        private Expression<Func<Artwork, bool>> BuildFilterExpression(ArtworkFilterParameterDTO filter)
+        {
+            Expression<Func<Artwork, bool>> filterExpression = artwork => true;
+
+            // Add conditions based on the filter parameters
+            if (!string.IsNullOrEmpty(filter.Title))
             {
-                var query = _unitOfWork.Repository<Artwork>().GetQueryable();
-
-                if (!string.IsNullOrEmpty(filter.Title))
-                {
-                    query = query.Where(a => a.Title.Contains(filter.Title));
-                }
-
-                if (filter.MinPrice.HasValue)
-                {
-                    query = query.Where(a => a.Price >= filter.MinPrice);
-                }
-
-                //if (filter.MaxPrice.HasValue)
-                //{
-                //    query = query.Where(a => a.Price <= filter.MaxPrice);
-                //}
-
-                //int skip = (filter.PageNumber - 1) * filter.PageSize;
-                //query = query.Skip(skip).Take(filter.PageSize);
-
-                var artworks = await query.ToListAsync();
-                var artworkDTOs = _mapper.Map<List<ArtworkDTO>>(artworks);
-                return artworkDTOs;
+                filterExpression = filterExpression.And(artwork => artwork.Title.Contains(filter.Title));
             }
-            catch (Exception ex)
+
+            if (filter.MinPrice.HasValue)
             {
-                Console.WriteLine(ex.Message);
-                throw; 
+                filterExpression = filterExpression.And(artwork => artwork.Price >= filter.MinPrice.Value);
             }
+
+            if (filter.MaxPrice.HasValue)
+            {
+                filterExpression = filterExpression.And(artwork => artwork.Price <= filter.MaxPrice.Value);
+            }
+
+            return filterExpression;
         }
 
         public async Task<ArtworkDTO> GetArtworkById(int id)
@@ -157,5 +161,17 @@ namespace Infrastructure.Persistence.Services
             return existingArtwork;
         }
 
+    }
+    public static class ExpressionExtensions
+    {
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
+        {
+            var parameter = Expression.Parameter(typeof(T));
+            var combined = Expression.AndAlso(
+                Expression.Invoke(left, parameter),
+                Expression.Invoke(right, parameter)
+            );
+            return Expression.Lambda<Func<T, bool>>(combined, parameter);
+        }
     }
 }

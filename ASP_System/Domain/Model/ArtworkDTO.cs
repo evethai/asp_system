@@ -23,13 +23,6 @@ namespace Domain.Model
         public bool? Status { get; set; }
         public int? ReOrderQuantity { get; set; }
     }
-    public class ArtworkDeleteDTO
-    {
-        [Key]
-        [Required(ErrorMessage = "Id is required")]
-        public int ArtworkId { get; set; }
-        public bool? Status { get; set; }
-    }
 
     public class ArtworkUpdateDTO
     {
@@ -49,7 +42,7 @@ namespace Domain.Model
     public class ArtworkAddDTO
     {
         [Required(ErrorMessage = "Title is required")]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         public string Description { get; set; }
 
@@ -61,5 +54,11 @@ namespace Domain.Model
         public List<string> ImagesUrl { get; set; }
 
         public List<int> CategoryIds { get; set; }
+    }
+
+    public class ArtworkImageDTO
+    {
+        public int ArtworkId { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

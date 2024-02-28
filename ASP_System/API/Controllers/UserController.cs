@@ -28,7 +28,6 @@ namespace API.Controllers
         public UserController(IUserServices userServices, IJwtTokenService jwtTokenService, ApplicationDbContext context, UserManager<ApplicationUser> userManager,
             ICurrentUserService currentUserService, RoleManager<IdentityRole> roleManager)
         {
-            _currentUserService = userService;
             _userServices = userServices;
             _jwtTokenService = jwtTokenService;
             _context = context;
@@ -55,7 +54,6 @@ namespace API.Controllers
             var user = await _userServices.SignInAsync(signInModel);
             if (user == null)
             {
-                
                 return Unauthorized();
             }
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -64,7 +62,7 @@ namespace API.Controllers
             return Ok(new { token = accessToken, refeshToken });
         }
         [Authorize]
-        [HttpGet("currentUser")] 
+        [HttpGet("currentUser")]
         public async Task<IActionResult> getCurrentUserId()
         {
             var user = _currentUserSerivice.GetUserId();

@@ -17,11 +17,13 @@ namespace Domain.Model
         public string Description { get; set; }
         [Required(ErrorMessage = "Price is required")]
         public double? Price { get; set; }
-        public int? UserId { get; set; }
+        public string? UserId { get; set; }
         public DateTime? CreateOn { get; set; }
         public DateTime? UpdateOn { get; set; }
         public bool? Status { get; set; }
         public int? ReOrderQuantity { get; set; }
+
+        public List<string> ImageUrl { get; set; }
     }
 
     public class ArtworkUpdateDTO

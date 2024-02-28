@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using API.Service;
+using Application.Interfaces;
 using Application.Interfaces.Services;
 using Domain.Entities;
 using Domain.Model;
@@ -16,10 +17,12 @@ namespace API.Controllers
     public class ArtworkController : ControllerBase
     {
         private readonly IArtworkService _artworkService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ArtworkController(IArtworkService artworkService)
+        public ArtworkController(IArtworkService artworkService,ICurrentUserService currentUserService)
         {
             _artworkService = artworkService;
+            _currentUserService = currentUserService;
         }
 
         //get all
@@ -30,19 +33,30 @@ namespace API.Controllers
             return Ok(result);
         }
         //get by id
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var result = await _artworkService.GetArtworkById(id);
             return Ok(result);
         }
+        //get by user id
+        [HttpGet("GetUserIdByArtworkId/{id}")]
+        public async Task<IActionResult> GetUserIdByArtworkId(int id)
+        {
+            var result = await _artworkService.GetUserIdByArtworkId(id);
+            return Ok(result);
+        }
+
+
         //post add
+        [Authorize]
         [HttpPost ("AddArtwork")]
         public async Task<IActionResult> AddArtwork([FromForm] ArtworkAddDTO artwork)
         {
             try
             {
-                var result = await _artworkService.AddArtwork(artwork);
+                var UserId = _currentUserService.GetUserId();    
+                var result = await _artworkService.AddArtwork(artwork,UserId.ToString());
                 return Ok(result);
             }catch(Exception ex)
             {
@@ -51,6 +65,7 @@ namespace API.Controllers
         }
 
         //put update
+        [Authorize]
         [HttpPut("UpdateArtwork")]
         public async Task<IActionResult> UpdateArtwork(ArtworkUpdateDTO artwork)
         {

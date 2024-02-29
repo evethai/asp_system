@@ -13,8 +13,5 @@ namespace Application.Interfaces.Services
         Task<ResponseDTO> UpdateOrder(OrderUpdateDTO order);
         Task<ResponseDTO> CreateOrder(OrderCreateDTO order);
         Task<ResponseDTO> DeleteOrder(OrderDeleteDTO order);
-        Task<OrderDTO> GetCode(int id);
-        Task<OrderDTO> GetArtworkId(int id);
-        
     }
 }

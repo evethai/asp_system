@@ -20,7 +20,6 @@ namespace Domain.Entities
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public double? Price { get; set; }
-        //public int? UserId { get; set; }
         public DateTime? CreateOn { get; set; }
         public DateTime? UpdateOn { get; set; }
         public bool? Status { get; set; }

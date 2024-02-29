@@ -1,4 +1,5 @@
-﻿using Domain.Model;
+﻿using Domain.Entities;
+using Domain.Model;
 
 namespace Application.Interfaces.Services
 {
@@ -6,8 +7,9 @@ namespace Application.Interfaces.Services
     {
         Task<IEnumerable<ArtworkDTO>> GetAllArtworks();
         Task<ArtworkDTO> GetArtworkById(int id);
-        Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork);
+        Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork, string UserId);
         Task<ResponseDTO> UpdateArtwork(ArtworkUpdateDTO artwork);
         Task<IEnumerable<ArtworkDTO>> GetArtworkByFilter(ArtworkFilterParameterDTO filter);
+        Task<string> GetUserIdByArtworkId(int id);
     }
 }

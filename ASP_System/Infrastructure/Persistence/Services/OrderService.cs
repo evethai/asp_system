@@ -70,8 +70,6 @@ namespace Infrastructure.Persistence.Services
         private Order submitCourseChange(Order existingOrder, OrderUpdateDTO order)
         {
             existingOrder.Code = order.Code;
-            existingOrder.ArtworkId = order.ArtworkId;
-            existingOrder.Date = order.Date;    
             existingOrder.ReOrderStatus = order.ReOrderStatus;
             
             return existingOrder;

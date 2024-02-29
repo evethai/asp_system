@@ -13,5 +13,6 @@ namespace Application.Interfaces.Services
         Task<ResponseDTO> UpdateOrder(OrderUpdateDTO order);
         Task<ResponseDTO> CreateOrder(OrderCreateDTO order);
         Task<ResponseDTO> DeleteOrder(OrderDeleteDTO order);
+        Task<IEnumerable<OrderDTO>> GetAllOrder();
     }
 }

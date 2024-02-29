@@ -104,7 +104,17 @@ namespace Infrastructure.Persistence.Services
 
             return existingOrder;
         }
-        
 
+        public async Task<IEnumerable<OrderDTO>> GetAllOrder()
+        {
+            var OrderList = await _unitOfWork.Repository<Order>().GetAllAsync();
+            var OrderDTOList = _mapper.Map<List<OrderDTO>>(OrderList);
+            foreach (var order in OrderDTOList)
+            {
+                
+            }
+
+            return OrderDTOList;
+        }
     }
 }

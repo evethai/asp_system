@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.Services;
 using Domain.Model;
 using Infrastructure.Persistence.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace API.Controllers
             _orderService = orderService;
         }
 
+        [Authorize]
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder([FromForm] OrderCreateDTO order)
         {
@@ -30,7 +32,7 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-       
+        [Authorize]
         [HttpPut("UpdateOrder")]
         public async Task<IActionResult> UpdateOrder(OrderUpdateDTO order)
         {
@@ -47,6 +49,7 @@ namespace API.Controllers
             var result = await _orderService.GetOrder(id);
             return Ok(result);
         }
+        [Authorize]
         [HttpPut("DeleteOrder")]
         public async Task<IActionResult> DeleteOrder(OrderDeleteDTO order)
         {

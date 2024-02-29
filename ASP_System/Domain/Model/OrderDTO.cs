@@ -39,9 +39,9 @@ namespace Domain.Model
     }
     public class OrderCreateDTO
     {
-        [Key]
-        [Required(ErrorMessage = "Id is required")]
-        public int OrderId { get; set; }
+        //[Key]
+        //[Required(ErrorMessage = "Id is required")]
+        //public int OrderId { get; set; }
         public DateTime Date { get; set; }
         public string? Code { get; set; }
         public int? ArtworkId { get; set; }

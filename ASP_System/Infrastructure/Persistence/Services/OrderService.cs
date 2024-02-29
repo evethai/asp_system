@@ -27,7 +27,7 @@ namespace Infrastructure.Persistence.Services
             {
                 var newOrder = new Order
                 {
-                    Date = order.Date,
+                    Date = DateTime.Now,
                     Code = order.Code,
                     ReOrderStatus = order.ReOrderStatus,
                     ArtworkId = order.ArtworkId

@@ -3,6 +3,7 @@ using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,21 +17,26 @@ namespace Infrastructure.Persistence.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
-        public Task<ResponseDTO> CreateOrder(OrderCreateDTO order) 
+        public Task<ResponseDTO> CreateOrder(OrderCreateDTO order, string userID) 
         {
             try
             {
+                var currentUser = _userManager.FindByIdAsync(userID).Result;
                 var newOrder = new Order
                 {
                     Date = DateTime.Now,
                     Code = order.Code,
                     ReOrderStatus = order.ReOrderStatus,
-                    ArtworkId = order.ArtworkId
+                    ArtworkId = order.ArtworkId,
+                    User = currentUser
+
                 };
                 _unitOfWork.Repository<Order>().AddAsync(newOrder);
                 _unitOfWork.Save();
@@ -45,7 +51,11 @@ namespace Infrastructure.Persistence.Services
         public async Task<OrderDTO> GetOrder(int id)
         {
             var Order = await _unitOfWork.Repository<Order>().GetByIdAsync(id);
-            return _mapper.Map<OrderDTO>(Order);
+            OrderDTO orderDTO = _mapper.Map<OrderDTO>(Order);
+           
+            orderDTO.UserId = await _unitOfWork.Repository<Order>().GetQueryable().Where(a => a.OrderId == id).Select(a => a.User.Id).FirstOrDefaultAsync();
+
+            return orderDTO;
         }
 
         public async Task<ResponseDTO> UpdateOrder(OrderUpdateDTO order)
@@ -97,10 +107,10 @@ namespace Infrastructure.Persistence.Services
 
         private Order submitCourse(Order existingOrder, OrderDeleteDTO order)
         {
-            existingOrder.Code = order.Code;
-            existingOrder.ArtworkId = order.ArtworkId;
-            existingOrder.Date = order.Date;
-            existingOrder.ReOrderStatus = order.ReOrderStatus;
+            //existingOrder.Code = order.Code;
+            //existingOrder.ArtworkId = order.ArtworkId;
+            //existingOrder.Date = order.Date;
+            //existingOrder.ReOrderStatus = order.ReOrderStatus;
 
             return existingOrder;
         }
@@ -112,8 +122,8 @@ namespace Infrastructure.Persistence.Services
             foreach (var order in OrderDTOList)
             {
                 
+                order.UserId = await _unitOfWork.Repository<Order>().GetQueryable().Where(a => a.OrderId == order.OrderId).Select(a => a.User.Id).FirstOrDefaultAsync();
             }
-
             return OrderDTOList;
         }
     }

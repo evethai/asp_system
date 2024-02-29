@@ -16,17 +16,17 @@ namespace Domain.Model
         public string? Code { get; set; }
         public int? ArtworkId { get; set; }
         public bool? ReOrderStatus { get; set; }
+        public string UserId { get; set; }
     }
+
     public class OrderDeleteDTO
     {
         [Key]
         [Required(ErrorMessage = "Id is required")]
         public int OrderId { get; set; }
-        public DateTime Date { get; set; }
-        public string? Code { get; set; }
-        public int? ArtworkId { get; set; }
-        public bool? ReOrderStatus { get; set; }
+        
     }
+
     public class OrderUpdateDTO
     {
         [Key]
@@ -34,7 +34,9 @@ namespace Domain.Model
         public int OrderId { get; set; }
         public string? Code { get; set; }
         public bool? ReOrderStatus { get; set; }
+       
     }
+
     public class OrderCreateDTO
     {
         //[Key]
@@ -44,6 +46,7 @@ namespace Domain.Model
         public string? Code { get; set; }
         public int? ArtworkId { get; set; }
         public bool? ReOrderStatus { get; set; }
+        //public string UserId { get; set; }
     }
     
 }

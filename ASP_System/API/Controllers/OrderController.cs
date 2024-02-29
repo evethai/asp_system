@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Services;
+﻿using API.Service;
+using Application.Interfaces.Services;
 using Domain.Model;
 using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -12,10 +13,12 @@ namespace API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, ICurrentUserService currentUserService)
         {
             _orderService = orderService;
+            _currentUserService = currentUserService;
         }
 
         [Authorize]
@@ -24,7 +27,8 @@ namespace API.Controllers
         {
             try
             {
-                var result = await _orderService.CreateOrder(order);
+                var currentUser = _currentUserService.GetUserId();
+                var result = await _orderService.CreateOrder(order, currentUser.ToString());
                 return Ok(result);
             }
             catch (Exception ex)
@@ -61,6 +65,11 @@ namespace API.Controllers
             return BadRequest(reponse);
         }
 
-
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllOrder()
+        {
+            var result = await _orderService.GetAllOrder();
+            return Ok(result);
+        }
     }
 }

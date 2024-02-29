@@ -107,10 +107,7 @@ namespace Infrastructure.Persistence.Services
 
         private Order submitCourse(Order existingOrder, OrderDeleteDTO order)
         {
-            //existingOrder.Code = order.Code;
-            //existingOrder.ArtworkId = order.ArtworkId;
-            //existingOrder.Date = order.Date;
-            //existingOrder.ReOrderStatus = order.ReOrderStatus;
+            existingOrder.OrderId = order.OrderId;
 
             return existingOrder;
         }

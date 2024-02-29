@@ -3,6 +3,7 @@ using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Model;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +16,19 @@ namespace Infrastructure.Persistence.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public NotificationService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
-        public Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti)
+        public Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti, string userid)
         {
             try
             {
+                var user = _userManager.FindByIdAsync(userid);
                 var newNotification = new Notification
                 {
                     Title = noti.Title,

@@ -36,6 +36,8 @@ namespace Infrastructure.Persistence
         {
             return await _dbSet.ToListAsync();
         }
+
+
         public async Task<T> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
@@ -81,6 +83,7 @@ namespace Infrastructure.Persistence
 
             return await query.ToListAsync();
         }
+
 
     }
 }

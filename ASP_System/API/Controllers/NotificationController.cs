@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Services;
+﻿using API.Service;
+using Application.Interfaces.Services;
 using Domain.Model;
 using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +12,12 @@ namespace API.Controllers
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public NotificationController(INotificationService notiService)
+        public NotificationController(INotificationService notiService, ICurrentUserService currentUserService)
         {
             _notificationService = notiService;
+            _currentUserService = currentUserService;
         }
 
 
@@ -37,7 +40,8 @@ namespace API.Controllers
         {
             try
             {
-                var result = await _notificationService.CreateNotification(noti);
+                var userid = _currentUserService.GetUserId();
+                var result = await _notificationService.CreateNotification(noti, userid.ToString());
                 return Ok(result);
             }
             catch (Exception ex)

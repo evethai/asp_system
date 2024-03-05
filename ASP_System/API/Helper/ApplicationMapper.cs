@@ -16,6 +16,15 @@ namespace API.Helper
             CreateMap<Package, PackageAddDTO>().ReverseMap();
             CreateMap<Poster, PosterDTO>().ReverseMap();
             CreateMap<Poster, PosterAddDTO>().ReverseMap();
+            CreateMap<Artwork, ArtworkDTO>().ReverseMap();
+            CreateMap<Artwork, ArtworkAddDTO>().ReverseMap();
+            CreateMap<Artwork, ArtworkUpdateDTO>().ReverseMap();
+            CreateMap<ArtworkImage, ArtworkImageDTO>().ReverseMap();
+            CreateMap<Order, OrderDTO>().ReverseMap();
+            CreateMap<Order, OrderCreateDTO>().ReverseMap();
+            CreateMap<Order, OrderUpdateDTO>().ReverseMap();
+            CreateMap<Order, OrderDeleteDTO>().ReverseMap();
+            CreateMap<Like, LikeDTO>().ReverseMap();
         }
     }
 }

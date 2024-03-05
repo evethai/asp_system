@@ -28,6 +28,8 @@ public static class DependencyInjection
         services.AddScoped<ICatalogyService, CatalogyService>();
         services.AddScoped<IPackageService, PackageService>();
         services.AddScoped<IPosterService, PosterService>();
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<ILikeService, LikeService>();
 
         return services;
     }

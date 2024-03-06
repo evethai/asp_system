@@ -62,7 +62,7 @@ namespace API.Controllers
             return Ok(new { token = accessToken, refeshToken });
         }
         [Authorize]
-        [HttpGet("currentUser")] 
+        [HttpGet("currentUser")]
         public async Task<IActionResult> getCurrentUserId()
         {
             var user = _currentUserSerivice.GetUserId();

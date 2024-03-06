@@ -21,13 +21,17 @@ public static class DependencyInjection
         {
             options.UseSqlServer(connectionString);
         });
-
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IArtworkService, ArtworkService>();
         services.AddScoped<IArtworkImageService, ArtworkImageService>();
         services.AddScoped<IUserServices, UserService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IUserNotificationService, UserNotificationService>();
+        services.AddScoped<ICatalogyService, CatalogyService>();
+        services.AddScoped<IPackageService, PackageService>();
+        services.AddScoped<IPosterService, PosterService>();
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<ILikeService, LikeService>();
 
         return services;
     }

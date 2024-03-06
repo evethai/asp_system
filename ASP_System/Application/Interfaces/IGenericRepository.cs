@@ -33,6 +33,4 @@ namespace Application.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         IQueryable<T> GetQueryable();
     }
-    
-
 }

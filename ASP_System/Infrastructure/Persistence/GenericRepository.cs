@@ -31,7 +31,7 @@ namespace Infrastructure.Persistence
             _dbSet.Remove(entity);
             return entity;
         }
-        
+
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
@@ -76,14 +76,12 @@ namespace Infrastructure.Persistence
             if (pageIndex.HasValue && pageSize.HasValue)
             {
                 int validPageIndex = pageIndex.Value > 0 ? pageIndex.Value : 0;
-                int validPageSize = pageSize.Value > 0 ? pageSize.Value : 10; 
+                int validPageSize = pageSize.Value > 0 ? pageSize.Value : 10;
 
                 query = query.Skip(validPageIndex * validPageSize).Take(validPageSize);
             }
 
             return await query.ToListAsync();
         }
-
-
     }
 }

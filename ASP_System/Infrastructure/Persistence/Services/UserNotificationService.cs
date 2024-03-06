@@ -98,7 +98,9 @@ namespace Infrastructure.Persistence.Services
             {
                 Id = notification.Id,
                 ArtworkTitle = notification.Artwork?.Title,
-                NotificationTitle = notification.Notification?.Title
+                NotificationTitle = notification.Notification?.Title,
+                NotificationDescription = notification.Notification?.Description,
+                isRead = notification.Notification.IsRead
             }).ToList();
             return _mapper.Map<List<GetUserNotificationDTO>>(userNotificationDTOs);
         }

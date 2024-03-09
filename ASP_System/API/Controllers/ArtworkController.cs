@@ -91,5 +91,11 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("GetArtworkByCategoryId/{id}")]
+        public async Task<IActionResult> GetArtworkByCategoryId(int id)
+        {
+            var result = await _artworkService.GetByCategory(id);
+            return Ok(result);
+        }
     }
 }

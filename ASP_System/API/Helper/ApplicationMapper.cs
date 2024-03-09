@@ -10,6 +10,11 @@ namespace API.Helper
         {
             CreateMap<Artwork,ArtworkDTO>().ReverseMap();
             CreateMap<Artwork,ArtworkAddDTO>().ReverseMap();
+            CreateMap<Artwork,ArtworkUpdateDTO>().ReverseMap();
+            CreateMap<Notification, NotificationDTO>().ReverseMap();
+            CreateMap<Notification, CreateNotificationDTO>().ReverseMap();
+            CreateMap<UserNofitication, UserNotificationDTO>().ReverseMap();
+            CreateMap<UserNofitication, CreateUserNotificationDTO>().ReverseMap();
             CreateMap<Category,CatalogyDTO>().ReverseMap();
             CreateMap<Category, CatalogyAddDTO>().ReverseMap();
             CreateMap<Package, PackageDTO>().ReverseMap();

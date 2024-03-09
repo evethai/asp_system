@@ -22,8 +22,8 @@ namespace Domain.Model
         public DateTime? UpdateOn { get; set; }
         public bool? Status { get; set; }
         public int? ReOrderQuantity { get; set; }
-
         public List<string> ImageUrl { get; set; }
+        public List<int?> Categories { get; set; }
     }
 
     public class ArtworkUpdateDTO

@@ -40,6 +40,19 @@ namespace Infrastructure.Persistence.Services
             this._roleManager = roleManager;
         }
 
+        public Task<UserDTO> GetUserByIDlAsync(string id)
+        {
+            var user = _userManager.FindByIdAsync(id);
+
+            UserDTO userDTO = new UserDTO
+            {
+                FirstName = user.Result.FirstName,
+                LastName = user.Result.LastName,
+                Birthday = user.Result.Birthday,
+            };
+            return Task.FromResult(userDTO);
+        }
+
         public async Task<ApplicationUser> SignInAsync(UserSignInDTO model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);

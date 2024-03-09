@@ -151,6 +151,7 @@ namespace Infrastructure.Persistence.Services
             artworkDTO.ImageUrl = await _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artworkDTO.ArtworkId).Select(a => a.Image).ToListAsync();
             artworkDTO.UserId = await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == id).Select(a => a.User.Id).FirstOrDefaultAsync();
             artworkDTO.Categories = await _unitOfWork.Repository<ArtworkHasCategory>().GetQueryable().Where(a => a.ArtworkId == artworkDTO.ArtworkId).Select(a => a.CategoryId).ToListAsync();
+
             return artworkDTO;
         }
 

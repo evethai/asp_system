@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using Domain.Model;
 using Infrastructure.Persistence.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ namespace API.Controllers
             var result = await _posterService.GetAllPoster();
             return Ok(result);
         }
-        [HttpPost]
+        [HttpPost("AddPoster")]
         public async Task<IActionResult> AddPoster(PosterAddDTO post)
         {
             try
@@ -46,20 +47,21 @@ namespace API.Controllers
             var result = await _posterService.GetPosterById(id);
             return Ok(result);
         }
-        //[HttpPut("Delete")]
-        //public async Task<IActionResult> DeletePost(int id)
-        //{
+        [HttpPut("DecreasePost")]
+        public async Task<IActionResult> DecreasePost(int id) // Khi artist post bài 
+        {
 
-        //    try
-        //    {
-        //        var result = await _posterService.DetelePost(id);
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
+            try
+            {
+                var userId = _currentUserService.GetUserId();
+                var result = await _posterService.DecreasePost(id,userId.ToString());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         //[HttpPut("Update")]
         //public async Task<IActionResult> UpdatePost(int id, PosterDTO post)
         //{

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Services;
+﻿using API.Service;
+using Application.Interfaces.Services;
 using Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace API.Controllers
     public class PackageController : ControllerBase
     {
         private readonly IPackageService _packageService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public PackageController(IPackageService packageService)
+        public PackageController(IPackageService packageService , ICurrentUserService currentUserService)
         {
             _packageService = packageService;
+            _currentUserService = currentUserService;
         }
         [HttpGet]
         public async Task<IActionResult> Get()

@@ -6,6 +6,7 @@ using AutoMapper.Configuration.Annotations;
 using Domain.Entities;
 using Domain.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,21 +54,44 @@ namespace Infrastructure.Persistence.Services
             }
         }
 
-        public Task<ResponseDTO> DetelePost(int id)
+        public Task<ResponseDTO> DecreasePost(int id, string UserId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var CheckQuantityPost = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.Id == id && p.User.Id == UserId);
+                if (CheckQuantityPost != null)
+                {
+                    var update = _mapper.Map<Poster>(CheckQuantityPost);
+                    update.QuantityPost = update.QuantityPost - 1;
+                    _unitOfWork.Repository<Poster>().UpdateAsync(update);
+                    _unitOfWork.Save();
+                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Poster updated successfully", Data = CheckQuantityPost });
+                }
+                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Package not found" });
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
+            }
         }
 
         public async Task<IEnumerable<PosterDTO>> GetAllPoster()
         {
-            var result = await _unitOfWork.Repository<Poster>().GetAllAsync();
-            return _mapper.Map<List<PosterDTO>>(result);
+            var PosterList = await _unitOfWork.Repository<Poster>().GetAllAsync();
+            var PosterDTOList = _mapper.Map<List<PosterDTO>>(PosterList);
+            foreach (var post in PosterDTOList)
+            {
+                post.UserId = await _unitOfWork.Repository<Poster>().GetQueryable().Where(a => a.Id == post.Id).Select(a => a.User.Id).FirstOrDefaultAsync();
+            }
+            return PosterDTOList;
         }
 
         public async Task<PosterDTO> GetPosterById(int id)
         {
            var result = await _unitOfWork.Repository<Poster>().GetByIdAsync(id);
-           return _mapper.Map<PosterDTO>(result);
+           PosterDTO post = _mapper.Map<PosterDTO>(result);
+           post.UserId = await _unitOfWork.Repository<Poster>().GetQueryable().Where(a => a.Id == id).Select(a => a.User.Id).FirstOrDefaultAsync();
+           return post;
         }
 
         public Task<ResponseDTO> QuantityExtensionPost(int PackageId, int PostId, string UserId) // Gia hạn thêm khi hết gói cước Post bài
@@ -92,26 +116,5 @@ namespace Infrastructure.Persistence.Services
                 return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
             }
         }
-        //public Task<ResponseDTO> UpdatePost(int id, PosterDTO post)
-        //{
-        //    try
-        //    {
-        //        if (id != post.Id)
-        //        {
-        //            return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Poster not found" });
-        //        }
-        //        else
-        //        {
-        //            var update = _mapper.Map<Poster>(post);
-        //            _unitOfWork.Repository<Poster>().UpdateAsync(update);
-        //            _unitOfWork.Save();
-        //            return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Poster updated successfully", Data = post });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
-        //    }
-        //}
     }
 }

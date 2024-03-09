@@ -12,14 +12,11 @@ namespace Domain.Model
     public class PosterDTO
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Package is required")]
         public int? PackageId { get; set; }
-        [Required(ErrorMessage = "Quantity is required")]
         public int? QuantityPost { get; set; }
 
         public Package Package { get; set; }
-        [Required(ErrorMessage = "UserId is required")]
-        public string User { get; set; }
+        public string UserId { get; set; }
     }
     public class PosterAddDTO
     {

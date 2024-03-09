@@ -8,7 +8,7 @@ namespace Domain.Model
 {
     public class ArtworkFilterParameterDTO
     {
-        public string Title { get; set; } = string.Empty;
+        public string? txtSearch { get; set; } = string.Empty;
         public double? MinPrice { get; set; }
         public double? MaxPrice { get; set; }
         public int PageNumber { get; set; } = 1;

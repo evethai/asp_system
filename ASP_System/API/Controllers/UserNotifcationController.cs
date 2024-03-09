@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using Domain.Model;
 using Infrastructure.Persistence.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ namespace API.Controllers
             _userNotificationService = notiService;
             _currentUserService = currentUserService;
         }
+        [Authorize]
         [HttpPost("CreateNotification")]
         public async Task<IActionResult> CreateUserNotification([FromForm] CreateUserNotificationDTO noti)
         {

@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using Domain.Model;
 using Infrastructure.Persistence.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +29,14 @@ namespace API.Controllers
             var result = await _notificationService.GetAllNotification();
             return Ok(result);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var result = await _notificationService.GetNotificationById(id);
             return Ok(result);
         }
-
+        [Authorize]
         [HttpPost("CreateNotification")]
         public async Task<IActionResult> CreateNotification([FromForm] CreateNotificationDTO noti)
         {

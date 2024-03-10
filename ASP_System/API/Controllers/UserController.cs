@@ -55,6 +55,7 @@ namespace API.Controllers
             if (user == null)
             {
                 return Unauthorized();
+            
             }
             var userRoles = await _userManager.GetRolesAsync(user);
             var accessToken = _jwtTokenService.CreateToken(user, userRoles);

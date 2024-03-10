@@ -1,4 +1,4 @@
-
+﻿
 using API.Service;
 using Application.Interfaces;
 using Application.Interfaces.Services;
@@ -97,8 +97,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
 
 app.UseAuthorization();
 

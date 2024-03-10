@@ -92,6 +92,7 @@ namespace Infrastructure.Persistence.Services
             {
                 artwork.ImageUrl = await _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.Image).ToListAsync();
                 artwork.UserId= await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.User.Id).FirstOrDefaultAsync();
+                artwork.Categories = await _unitOfWork.Repository<ArtworkHasCategory>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.CategoryId).ToListAsync();
             }
 
             return ArtworkDTOList;
@@ -109,7 +110,14 @@ namespace Infrastructure.Persistence.Services
                 pageSize: filter.PageSize
             );
 
-            return _mapper.Map<List<ArtworkDTO>>(artworks);
+            //return _mapper.Map<List<ArtworkDTO>>(artworks);
+            var ArtworkDTOList = _mapper.Map<List<ArtworkDTO>>(artworks);
+            foreach (var artwork in ArtworkDTOList)
+            {
+                artwork.ImageUrl = await _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.Image).ToListAsync();
+                artwork.UserId = await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.User.Id).FirstOrDefaultAsync();
+            }
+            return ArtworkDTOList;
         }
 
         private Expression<Func<Artwork, bool>> BuildFilterExpression(ArtworkFilterParameterDTO filter)
@@ -117,9 +125,10 @@ namespace Infrastructure.Persistence.Services
             Expression<Func<Artwork, bool>> filterExpression = artwork => true;
 
             // Add conditions based on the filter parameters
-            if (!string.IsNullOrEmpty(filter.Title))
+            if (!string.IsNullOrEmpty(filter.txtSearch))
             {
-                filterExpression = filterExpression.And(artwork => artwork.Title.Contains(filter.Title));
+                filterExpression = filterExpression.And(artwork => artwork.Title.Contains(filter.txtSearch) 
+                ||artwork.Description.Contains(filter.txtSearch));
             }
 
             if (filter.MinPrice.HasValue)
@@ -141,6 +150,7 @@ namespace Infrastructure.Persistence.Services
             ArtworkDTO artworkDTO = _mapper.Map<ArtworkDTO>(Artwork);
             artworkDTO.ImageUrl = await _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artworkDTO.ArtworkId).Select(a => a.Image).ToListAsync();
             artworkDTO.UserId = await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == id).Select(a => a.User.Id).FirstOrDefaultAsync();
+            artworkDTO.Categories = await _unitOfWork.Repository<ArtworkHasCategory>().GetQueryable().Where(a => a.ArtworkId == artworkDTO.ArtworkId).Select(a => a.CategoryId).ToListAsync();
 
             return artworkDTO;
         }
@@ -181,6 +191,19 @@ namespace Infrastructure.Persistence.Services
         {
             var user = await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == id).Select(a => a.User.Id).FirstOrDefaultAsync();
             return user;
+        }
+
+        public async Task<IEnumerable<ArtworkDTO>> GetByCategory(int categoryId)
+        {
+            var artworkList = _unitOfWork.Repository<ArtworkHasCategory>().GetQueryable().Where(a => a.CategoryId == categoryId).Select(a => a.Artwork).ToList();
+            var ArtworkDTOList = _mapper.Map<List<ArtworkDTO>>(artworkList);
+            foreach (var artwork in ArtworkDTOList)
+            {
+                artwork.ImageUrl = await _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.Image).ToListAsync();
+                artwork.UserId = await _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.User.Id).FirstOrDefaultAsync();
+            }
+
+            return ArtworkDTOList;
         }
     }
     public static class ExpressionExtensions

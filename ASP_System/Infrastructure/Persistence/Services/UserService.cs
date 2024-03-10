@@ -48,6 +48,17 @@ namespace Infrastructure.Persistence.Services
 
             // Optionally, you can also sign out from external authentication providers if used
             //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        public Task<UserDTO> GetUserByIDlAsync(string id)
+        {
+            var user = _userManager.FindByIdAsync(id);
+
+            UserDTO userDTO = new UserDTO
+            {
+                FirstName = user.Result.FirstName,
+                LastName = user.Result.LastName,
+                Birthday = user.Result.Birthday,
+            };
+            return Task.FromResult(userDTO);
         }
 
         public async Task<ApplicationUser> SignInAsync(UserSignInDTO model)

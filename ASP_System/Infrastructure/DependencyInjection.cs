@@ -25,6 +25,8 @@ public static class DependencyInjection
         services.AddScoped<IArtworkService, ArtworkService>();
         services.AddScoped<IArtworkImageService, ArtworkImageService>();
         services.AddScoped<IUserServices, UserService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IUserNotificationService, UserNotificationService>();
         services.AddScoped<ICatalogyService, CatalogyService>();
         services.AddScoped<IPackageService, PackageService>();
         services.AddScoped<IPosterService, PosterService>();

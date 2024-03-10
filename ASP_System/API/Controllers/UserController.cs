@@ -88,5 +88,12 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { token = token, refreshToken = newRefreshToken });
         }
+
+        [HttpGet("GetUserById/{id}")]
+        public async Task<IActionResult> GetAllUser(string id)
+        {
+            var result = await _userServices.GetUserByIDlAsync(id);
+            return Ok(result);
+        }
     }
 }

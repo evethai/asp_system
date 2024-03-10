@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -36,6 +37,8 @@ namespace Infrastructure.Persistence
         {
             return await _dbSet.ToListAsync();
         }
+
+
         public async Task<T> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
@@ -81,5 +84,6 @@ namespace Infrastructure.Persistence
 
             return await query.ToListAsync();
         }
+
     }
 }

@@ -15,5 +15,6 @@ namespace Application.Interfaces.Services
         //public Task<SignInResult> SignInAsync(UserSignInDTO model);
         public Task<ApplicationUser> SignInAsync(UserSignInDTO model);
         //public Task LogOutAsync();
+        public Task<UserDTO> GetUserByIDlAsync(string id);
     }
 }

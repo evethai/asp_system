@@ -11,5 +11,6 @@ namespace Application.Interfaces.Services
         Task<ResponseDTO> UpdateArtwork(ArtworkUpdateDTO artwork);
         Task<IEnumerable<ArtworkDTO>> GetArtworkByFilter(ArtworkFilterParameterDTO filter);
         Task<string> GetUserIdByArtworkId(int id);
+        Task<IEnumerable<ArtworkDTO>>GetByCategory(int categoryId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -83,5 +84,6 @@ namespace Infrastructure.Persistence
 
             return await query.ToListAsync();
         }
+
     }
 }

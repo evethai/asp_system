@@ -55,6 +55,7 @@ namespace API.Controllers
             if (user == null)
             {
                 return Unauthorized();
+            
             }
             var userRoles = await _userManager.GetRolesAsync(user);
             var accessToken = _jwtTokenService.CreateToken(user, userRoles);
@@ -67,6 +68,12 @@ namespace API.Controllers
         {
             var user = _currentUserSerivice.GetUserId();
             return Ok(new { userId = user });
+        }
+        [HttpGet("getAllUser")]
+        public Task<IEnumerable<UserDTO>> getAllUsers()
+        {
+            var listUser = _userServices.GetAllUsers();
+            return listUser;
         }
         [Authorize]
         [HttpPost("refesh-token")]
@@ -86,6 +93,13 @@ namespace API.Controllers
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return Ok(new { token = token, refreshToken = newRefreshToken });
+        }
+
+        [HttpGet("GetUserById/{id}")]
+        public async Task<IActionResult> GetAllUser(string id)
+        {
+            var result = await _userServices.GetUserByIDlAsync(id);
+            return Ok(result);
         }
     }
 }

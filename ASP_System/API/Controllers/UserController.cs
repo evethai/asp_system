@@ -69,6 +69,12 @@ namespace API.Controllers
             var user = _currentUserSerivice.GetUserId();
             return Ok(new { userId = user });
         }
+        [HttpGet("getAllUser")]
+        public Task<IEnumerable<UserDTO>> getAllUsers()
+        {
+            var listUser = _userServices.GetAllUsers();
+            return listUser;
+        }
         [Authorize]
         [HttpPost("refesh-token")]
         public async Task<IActionResult> refeshToken(string refeshToken)

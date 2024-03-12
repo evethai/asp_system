@@ -21,5 +21,6 @@ namespace Domain.Model
     public class PosterAddDTO
     {
         public int? PackageId { get; set; }
+        public string UserId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Domain.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Domain.Entities
         public double? Price { get; set; }
         public DateTime? CreateOn { get; set; }
         public DateTime? UpdateOn { get; set; }
-        public bool? Status { get; set; }
+        public ArtWorkStatus Status { get; set; }
         public int? ReOrderQuantity { get; set; }
 
         public virtual ICollection<ArtworkImage> ArtworkImages { get; set; } = null!;

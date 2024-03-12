@@ -42,12 +42,12 @@ namespace Infrastructure.Persistence.Services
             this._roleManager = roleManager;
         }
 
-        public async Task LogOutAsync()
-        {
-            await _signInManager.SignOutAsync();
+        //public async Task LogOutAsync()
+        //{
+        //    await _signInManager.SignOutAsync();
 
-            // Optionally, you can also sign out from external authentication providers if used
-            //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        //    // Optionally, you can also sign out from external authentication providers if used
+        //    //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         public Task<UserDTO> GetUserByIDlAsync(string id)
         {
             var user = _userManager.FindByIdAsync(id);

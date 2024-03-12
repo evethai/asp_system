@@ -205,7 +205,18 @@ namespace Infrastructure.Persistence.Services
 
             return ArtworkDTOList;
         }
-    }
+
+		public async Task<IEnumerable<ArtworkDTO>> GetAllArtworkByUserID(string userId)
+		{
+			var artworkList = _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.User.Id == userId).ToList();
+            var ArtworkDTOList = _mapper.Map<List<ArtworkDTO>>(artworkList);
+            foreach (var artwork in ArtworkDTOList)
+            {
+				artwork.ImageUrl = await _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.Image).ToListAsync();
+			}
+            return ArtworkDTOList;
+		}
+	}
     public static class ExpressionExtensions
     {
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)

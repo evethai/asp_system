@@ -47,6 +47,14 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        //get by user id
+        [HttpGet("GetAllArtworkByUserID/{id}")]
+        public async Task<IActionResult> GetAllArtworkByUserID(string id)
+        {
+			var result = await _artworkService.GetAllArtworkByUserID(id);
+			return Ok(result);
+		}
+
 
         //post add
         [Authorize]

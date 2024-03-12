@@ -12,5 +12,6 @@ namespace Application.Interfaces.Services
         Task<IEnumerable<ArtworkDTO>> GetArtworkByFilter(ArtworkFilterParameterDTO filter);
         Task<string> GetUserIdByArtworkId(int id);
         Task<IEnumerable<ArtworkDTO>>GetByCategory(int categoryId);
+        Task<IEnumerable<ArtworkDTO>>GetAllArtworkByUserID(string userId);
     }
 }

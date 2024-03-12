@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Interfaces.Services;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -75,7 +76,7 @@ namespace API.Controllers
         //put update
         [Authorize]
         [HttpPut("UpdateArtwork")]
-        public async Task<IActionResult> UpdateArtwork(ArtworkUpdateDTO artwork)
+        public async Task<IActionResult> UpdateArtwork([FromForm]ArtworkUpdateDTO artwork)
         {
             var reponse = await _artworkService.UpdateArtwork(artwork);
             if (reponse.IsSuccess)
@@ -103,6 +104,13 @@ namespace API.Controllers
         public async Task<IActionResult> GetArtworkByCategoryId(int id)
         {
             var result = await _artworkService.GetByCategory(id);
+            return Ok(result);
+        }
+
+        [HttpGet("GetAllArtworkByStatus/{id}")]
+        public async Task<IActionResult> GetAllArtworkByStatus(ArtWorkStatus id)
+        {
+            var result = await _artworkService.GetAllArtworkByStatus((id));
             return Ok(result);
         }
     }

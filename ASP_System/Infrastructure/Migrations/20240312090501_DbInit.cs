@@ -136,7 +136,7 @@ namespace Infrastructure.Migrations
                     Price = table.Column<double>(type: "float", nullable: true),
                     CreateOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdateOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Status = table.Column<bool>(type: "bit", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     ReOrderQuantity = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },

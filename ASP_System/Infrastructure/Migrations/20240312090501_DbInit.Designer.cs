@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240227015512_DbInit")]
+    [Migration("20240312090501_DbInit")]
     partial class DbInit
     {
         /// <inheritdoc />
@@ -137,8 +137,8 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("ReOrderQuantity")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()

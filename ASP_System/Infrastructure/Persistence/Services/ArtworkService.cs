@@ -38,7 +38,7 @@ namespace Infrastructure.Persistence.Services
                     Description = artwork.Description,
                     Price = artwork.Price,
                     ReOrderQuantity = artwork.ReOrderQuantity,
-                    Status = ArtWorkStatus.InProgress,
+                    Status = ArtWorkStatus.PendingConfirmation,
                     CreateOn = DateTime.Now,
                     UpdateOn = DateTime.Now,
                     User = user
@@ -182,7 +182,7 @@ namespace Infrastructure.Persistence.Services
             existingArtwork.Description = artwork.Description;
             existingArtwork.Price = artwork.Price;
             existingArtwork.ReOrderQuantity = artwork.ReOrderQuantity;
-            //existingArtwork.Status = artwork.Status;
+            existingArtwork.Status = artwork.Status;
             existingArtwork.UpdateOn = DateTime.Now;
 
             return existingArtwork;
@@ -217,7 +217,18 @@ namespace Infrastructure.Persistence.Services
 			}
             return ArtworkDTOList;
 		}
-	}
+
+        public Task<IEnumerable<ArtworkDTO>> GetAllArtworkByStatus(ArtWorkStatus status)
+        {
+            var artworkList = _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.Status == status).ToList();
+            var ArtworkDTOList = _mapper.Map<List<ArtworkDTO>>(artworkList);
+            foreach (var artwork in ArtworkDTOList)
+            {
+                artwork.ImageUrl = _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.Image).ToList();
+            }
+            return Task.FromResult((IEnumerable<ArtworkDTO>)ArtworkDTOList);
+        }
+    }
     public static class ExpressionExtensions
     {
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)

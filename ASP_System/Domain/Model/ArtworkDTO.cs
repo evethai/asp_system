@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,7 +22,7 @@ namespace Domain.Model
         public string? UserId { get; set; }
         public DateTime? CreateOn { get; set; }
         public DateTime? UpdateOn { get; set; }
-        public bool? Status { get; set; }
+        public ArtWorkStatus Status { get; set; }
         public int? ReOrderQuantity { get; set; }
         public List<string> ImageUrl { get; set; }
         public List<int?> Categories { get; set; }
@@ -38,8 +39,7 @@ namespace Domain.Model
         public string Description { get; set; }
         [Required(ErrorMessage = "Price is required")]
         public double? Price { get; set; }
-        public DateTime? UpdateOn { get; set; }
-        public bool? Status { get; set; }
+        public ArtWorkStatus Status { get; set; }
         public int? ReOrderQuantity { get; set; }
     }
     public class ArtworkAddDTO

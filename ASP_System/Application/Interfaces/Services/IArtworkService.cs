@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Domain.Model;
 
 namespace Application.Interfaces.Services
@@ -13,5 +14,6 @@ namespace Application.Interfaces.Services
         Task<string> GetUserIdByArtworkId(int id);
         Task<IEnumerable<ArtworkDTO>>GetByCategory(int categoryId);
         Task<IEnumerable<ArtworkDTO>>GetAllArtworkByUserID(string userId);
+        Task<IEnumerable<ArtworkDTO>>GetAllArtworkByStatus(ArtWorkStatus status);
     }
 }

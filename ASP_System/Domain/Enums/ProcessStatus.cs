@@ -16,4 +16,10 @@ namespace Domain.Enums
         RelateEntity = 6,
         NotEnough = 7,
     }
+    public enum ArtWorkStatus
+    {
+        PendingConfirmation = 1,
+        InProgress = 2,
+        Sold = 3
+    }
 }

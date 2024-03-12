@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,7 @@ namespace Infrastructure.Persistence.Services
                     Description = artwork.Description,
                     Price = artwork.Price,
                     ReOrderQuantity = artwork.ReOrderQuantity,
-                    Status = true,
+                    Status = ArtWorkStatus.InProgress,
                     CreateOn = DateTime.Now,
                     UpdateOn = DateTime.Now,
                     User = user
@@ -181,7 +182,7 @@ namespace Infrastructure.Persistence.Services
             existingArtwork.Description = artwork.Description;
             existingArtwork.Price = artwork.Price;
             existingArtwork.ReOrderQuantity = artwork.ReOrderQuantity;
-            existingArtwork.Status = artwork.Status;
+            //existingArtwork.Status = artwork.Status;
             existingArtwork.UpdateOn = DateTime.Now;
 
             return existingArtwork;

@@ -42,12 +42,31 @@ namespace Infrastructure.Persistence.Services
             this._roleManager = roleManager;
         }
 
+        public Task<IEnumerable<UserDTO>> GetAllUsers()
+        {
+            var users = _userManager.Users;
+            List<UserDTO> userDTOs = new List<UserDTO>();
+            foreach (var user in users)
+            {
+                UserDTO userDTO = new UserDTO
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Birthday = user.Birthday,
+                };
+                userDTOs.Add(userDTO);
+            }
+            return Task.FromResult(userDTOs.AsEnumerable());
+        }
+
+
         //public async Task LogOutAsync()
         //{
         //    await _signInManager.SignOutAsync();
 
         //    // Optionally, you can also sign out from external authentication providers if used
         //    //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        //}
         public Task<UserDTO> GetUserByIDlAsync(string id)
         {
             var user = _userManager.FindByIdAsync(id);

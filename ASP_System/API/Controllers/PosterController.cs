@@ -32,8 +32,8 @@ namespace API.Controllers
         {
             try
             {
-                var userId = _currentUserService.GetUserId();
-                var result = await _posterService.AddPoster(post,userId.ToString());
+                //var userId = _currentUserService.GetUserId();
+                var result = await _posterService.AddPoster(post);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -48,13 +48,12 @@ namespace API.Controllers
             return Ok(result);
         }
         [HttpPut("DecreasePost")]
-        public async Task<IActionResult> DecreasePost(int id) // Khi artist post bài 
+        public async Task<IActionResult> DecreasePost(string userId) // Khi artist post bài 
         {
 
             try
             {
-                var userId = _currentUserService.GetUserId();
-                var result = await _posterService.DecreasePost(id,userId.ToString());
+                var result = await _posterService.DecreasePost(userId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -75,19 +74,18 @@ namespace API.Controllers
         //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         //    }
         //}
-        [HttpPut("QuantityExtensionPost")]
-        public async Task<IActionResult> QuantityExtensionPost(int PackageId, int PostId)
-        {
-            try
-            {
-                var userId = _currentUserService.GetUserId();
-                var result = await _posterService.QuantityExtensionPost(PackageId, PostId, userId.ToString());
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        //[HttpPut("QuantityExtensionPost")]
+        //public async Task<IActionResult> QuantityExtensionPost(PosterAddDTO post)
+        //{
+        //    try
+        //    {
+        //        var result = await _posterService.QuantityExtensionPost(post);
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
     }
 }

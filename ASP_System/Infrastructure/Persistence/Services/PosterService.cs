@@ -5,6 +5,7 @@ using AutoMapper;
 using AutoMapper.Configuration.Annotations;
 using Domain.Entities;
 using Domain.Model;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,20 +29,34 @@ namespace Infrastructure.Persistence.Services
             _userManager = user;
         }
 
-        public async Task<ResponseDTO> AddPoster(PosterAddDTO post, string UserId)
+        public async Task<ResponseDTO> AddPoster(PosterAddDTO post)
         {
             try
-            {
-                var user = await _userManager.FindByIdAsync(UserId);
+            {               
                 var checkId = _unitOfWork.Repository<Package>().GetQueryable().FirstOrDefault(c => c.Id == post.PackageId);
+                var user = await _userManager.FindByIdAsync(post.UserId);
+                
                 if (checkId != null || user !=null)
                 {
-                    var newPost = _mapper.Map<Poster>(post);
-                    newPost.User = user;                   
-                    newPost.QuantityPost = checkId.Quantity;
-                    _unitOfWork.Repository<Poster>().AddAsync(newPost);
-                    _unitOfWork.Save();
-                   return new ResponseDTO { IsSuccess = true, Message = "Poster added successfully", Data = post };
+                    var CheckPostId = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.User.Id == post.UserId);
+                    if (CheckPostId != null)
+                    {
+                        var update = _mapper.Map<Poster>(CheckPostId);
+                        update.QuantityPost = update.QuantityPost + checkId.Quantity;
+                        update.PackageId = post.PackageId;
+                        _unitOfWork.Repository<Poster>().UpdateAsync(update);
+                        _unitOfWork.Save();
+                    }
+                    else
+                    {
+                        var newPost = _mapper.Map<Poster>(post);
+                        newPost.User = user;
+                        newPost.QuantityPost = checkId.Quantity;
+                        _unitOfWork.Repository<Poster>().AddAsync(newPost);
+                        _unitOfWork.Save();
+                    }
+                    return new ResponseDTO { IsSuccess = true, Message = "Poster added successfully", Data = post };
+
                 }
                 else
                 {
@@ -54,11 +69,11 @@ namespace Infrastructure.Persistence.Services
             }
         }
 
-        public Task<ResponseDTO> DecreasePost(int id, string UserId)
+        public Task<ResponseDTO> DecreasePost(string userId)
         {
             try
             {
-                var CheckQuantityPost = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.Id == id && p.User.Id == UserId);
+                var CheckQuantityPost = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.User.Id == userId);
                 if (CheckQuantityPost != null)
                 {
                     var update = _mapper.Map<Poster>(CheckQuantityPost);
@@ -94,27 +109,27 @@ namespace Infrastructure.Persistence.Services
            return post;
         }
 
-        public Task<ResponseDTO> QuantityExtensionPost(int PackageId, int PostId, string UserId) // Gia hạn thêm khi hết gói cước Post bài
-        {
-            try
-            {
-                var CheckQuantityPost = _unitOfWork.Repository<Package>().GetQueryable().FirstOrDefault(p=>p.Id == PackageId);               
-                if (CheckQuantityPost != null)
-                {
-                    var CheckPostId = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.Id == PostId);
-                    var update = _mapper.Map<Poster>(CheckPostId);
-                    update.QuantityPost = update.QuantityPost + CheckQuantityPost.Quantity;
-                    update.PackageId = PackageId;
-                    _unitOfWork.Repository<Poster>().UpdateAsync(update);
-                    _unitOfWork.Save();
-                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Poster updated successfully", Data = CheckPostId });
-                }
-                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Package not found" });
-            }
-            catch (Exception ex)
-            {
-                return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
-            }
-        }
+        //public Task<ResponseDTO> QuantityExtensionPost(PosterAddDTO post) // Gia hạn thêm khi hết gói cước Post bài
+        //{
+        //    try
+        //    {
+        //        var CheckQuantityPost = _unitOfWork.Repository<Package>().GetQueryable().FirstOrDefault(p=>p.Id == post.PackageId);               
+        //        if (CheckQuantityPost != null)
+        //        {
+        //            var CheckPostId = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.User.Id == post.UserId);
+        //            var update = _mapper.Map<Poster>(CheckPostId);
+        //            update.QuantityPost = update.QuantityPost + CheckQuantityPost.Quantity;
+        //            update.PackageId = post.PackageId;
+        //            _unitOfWork.Repository<Poster>().UpdateAsync(update);
+        //            _unitOfWork.Save();
+        //            return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Poster updated successfully", Data = CheckPostId });
+        //        }
+        //        return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Package not found" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
+        //    }
+        //}
     }
 }

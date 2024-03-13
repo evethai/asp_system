@@ -58,14 +58,13 @@ namespace API.Controllers
 
 
         //post add
-        [Authorize]
+        //[Authorize]
         [HttpPost ("AddArtwork")]
         public async Task<IActionResult> AddArtwork([FromForm] ArtworkAddDTO artwork)
         {
             try
-            {
-                var UserId = _currentUserService.GetUserId();    
-                var result = await _artworkService.AddArtwork(artwork,UserId.ToString());
+            {   
+                var result = await _artworkService.AddArtwork(artwork);
                 return Ok(result);
             }catch(Exception ex)
             {

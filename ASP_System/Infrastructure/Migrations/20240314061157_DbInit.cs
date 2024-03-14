@@ -81,7 +81,8 @@ namespace Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsRead = table.Column<bool>(type: "bit", nullable: true)
+                    IsRead = table.Column<bool>(type: "bit", nullable: true),
+                    notiStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -34,7 +34,7 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("{userId}/notifications")]
+        [HttpGet("{userId}")]
         public async Task<ActionResult<IEnumerable<GetUserNotificationDTO>>> GetNotificationByUserId(string userId)
         {
             var notifications = await _userNotificationService.GetNotificationByUserId(userId);

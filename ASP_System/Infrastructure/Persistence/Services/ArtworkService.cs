@@ -27,11 +27,11 @@ namespace Infrastructure.Persistence.Services
             _userManager = userManager;
         }
 
-        public Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork, string UserId)
+        public Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork)
         {
             try
             {
-                var user = _userManager.FindByIdAsync(UserId).Result;
+                var user = _userManager.FindByIdAsync(artwork.UserId).Result;
                 var newArtwork = new Artwork
                 {
                     Title = artwork.Title,

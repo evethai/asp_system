@@ -89,20 +89,21 @@ namespace Infrastructure.Persistence.Services
         public async Task<IEnumerable<GetUserNotificationDTO>> GetNotificationByUserId(string userId)
         {
             var userNotifications = await _unitOfWork.Repository<UserNofitication>()
-            .GetQueryable()
-            .Where(noti => noti.User.Id == userId)
-            .Include(x => x.Artwork)
-            .Include(x => x.Notification)
-            .ToListAsync();
+             .GetQueryable()
+             .Where(noti => noti.User.Id == userId)
+             .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
+             .Include(x => x.Notification)
+             .ToListAsync();
             var userNotificationDTOs = userNotifications.Select(notification => new GetUserNotificationDTO
             {
                 Id = notification.Id,
                 ArtworkTitle = notification.Artwork?.Title,
                 NotificationTitle = notification.Notification?.Title,
                 NotificationDescription = notification.Notification?.Description,
-                isRead = notification.Notification.IsRead
+                isRead = notification.Notification.IsRead,
+                artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image
             }).ToList();
-            return _mapper.Map<List<GetUserNotificationDTO>>(userNotificationDTOs);
+            return userNotificationDTOs;
         }
 
 

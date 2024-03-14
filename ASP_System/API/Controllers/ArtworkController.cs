@@ -60,7 +60,7 @@ namespace API.Controllers
         //post add
         //[Authorize]
         [HttpPost ("AddArtwork")]
-        public async Task<IActionResult> AddArtwork([FromForm] ArtworkAddDTO artwork)
+        public async Task<IActionResult> AddArtwork( ArtworkAddDTO artwork)
         {
             try
             {   

@@ -41,10 +41,10 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPostById(int id)
+        [HttpGet("{UserId}")]
+        public async Task<IActionResult> GetPostByUserId(string UserId)
         {
-            var result = await _posterService.GetPosterById(id);
+            var result = await _posterService.GetPosterByUserId(UserId);
             return Ok(result);
         }
         [HttpPut("DecreasePost")]

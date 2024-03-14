@@ -91,35 +91,21 @@ namespace Infrastructure.Persistence.Services
             var userNotifications = await _unitOfWork.Repository<UserNofitication>()
             .GetQueryable()
             .Where(noti => noti.User.Id == userId)
-            .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
+            .Include(x => x.Artwork).ThenInclude(x=>x.ArtworkImages)
             .Include(x => x.Notification)
             .ToListAsync();
 
             List<GetUserNotificationDTO> dto = new List<GetUserNotificationDTO>();
             foreach (var notification in userNotifications)
             {
-                dto.Add(new GetUserNotificationDTO
-                {
-                    Id = notification.Id,
-                    ArtworkTitle = notification.Artwork?.Title,
-                    NotificationTitle = notification.Notification?.Title,
-                    NotificationDescription = notification.Notification?.Description,
-                    isRead = notification.Notification.IsRead,
-                    artwrokImage = notification.Artwork.ArtworkImages.FirstOrDefault().Image
-                });
-            }
-            return dto;
-            //var userNotificationDTOs = userNotifications.Select(notification => new GetUserNotificationDTO
-            //{
-            //    Id = notification.Id,
-            //    ArtworkTitle = notification.Artwork?.Title,
-            //    NotificationTitle = notification.Notification?.Title,
-            //    NotificationDescription = notification.Notification?.Description,
-            //    isRead = notification.Notification.IsRead,
-            //    artwrokImage = notification.Artwork?.ArtworkImages.FirstOrDefault().Image
-            //}).ToList();
-            //return _mapper.Map<List<GetUserNotificationDTO>>(userNotificationDTOs);
-
+                Id = notification.Id,
+                ArtworkTitle = notification.Artwork?.Title,
+                NotificationTitle = notification.Notification?.Title,
+                NotificationDescription = notification.Notification?.Description,
+                isRead = notification.Notification.IsRead,
+                artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image
+            }).ToList();
+            return userNotificationDTOs;
         }
 
 

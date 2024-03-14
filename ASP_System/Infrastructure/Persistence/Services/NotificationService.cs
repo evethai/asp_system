@@ -33,6 +33,7 @@ namespace Infrastructure.Persistence.Services
                 {
                     Title = noti.Title,
                     Description = noti.Description,
+                    notiStatus = noti.notiStatus,
                     Date = DateTime.Now,
                     IsRead = false,
                 };

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +17,7 @@ namespace Domain.Model
         public string Description { get; set; } = string.Empty;
         public DateTime? Date { get; set; }
         public bool? IsRead { get; set; }
+        public NotiStatus notiStatus { get; set; }
     }
 
     public class CreateNotificationDTO
@@ -24,5 +26,6 @@ namespace Domain.Model
         public string Title { get; set; } = string.Empty;
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; } = string.Empty;
-    }
+        public NotiStatus notiStatus { get; set; }
+}
 }

@@ -34,5 +34,7 @@ namespace Domain.Model
         public string ? NotificationTitle { get; set; }
         public string ? NotificationDescription { get; set; }
         public bool ? isRead { get; set; }
+
+        public string artwordUrl {  get; set; }
     }
 }

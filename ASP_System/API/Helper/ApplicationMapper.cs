@@ -30,6 +30,9 @@ namespace API.Helper
             CreateMap<Order, OrderUpdateDTO>().ReverseMap();
             CreateMap<Order, OrderDeleteDTO>().ReverseMap();
             CreateMap<Like, LikeDTO>().ReverseMap();
-        }
+			CreateMap<Comment, CommentDTO>().ReverseMap();
+		    CreateMap<Comment, CommentAddDTO>().ReverseMap();
+
+		}
     }
 }

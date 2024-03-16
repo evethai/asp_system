@@ -8,7 +8,9 @@ namespace Domain.Enums
 {
     public enum NotiStatus
     {
+        Normal, 
         Order,
-        Normal 
+        Accept,
+        Deny
     }
 }

@@ -91,6 +91,7 @@ namespace Infrastructure.Persistence.Services
             var userNotifications = await _unitOfWork.Repository<UserNofitication>()
             .GetQueryable()
             .Where(noti => noti.User.Id == userId)
+            .Include(x=> x.User)
             .Include(x => x.Artwork).ThenInclude(x=>x.ArtworkImages)
             .Include(x => x.Notification)
             .ToListAsync();
@@ -101,6 +102,9 @@ namespace Infrastructure.Persistence.Services
                 NotificationTitle = notification.Notification?.Title,
                 NotificationDescription = notification.Notification?.Description,
                 isRead = notification.Notification.IsRead,
+                nameUser = notification.User.LastName + " " + notification.User.FirstName,
+                dateTime = notification.Notification.Date,
+                notiStatus = notification.Notification.notiStatus,
                 artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image
             }).ToList();
             return userNotificationDTOs;

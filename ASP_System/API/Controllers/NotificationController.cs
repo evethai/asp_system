@@ -51,6 +51,18 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPut("MarkReadNoti")]
+        public async Task<IActionResult> MarkReadNoti(int id)
+        {
+            var reponse = await _notificationService.MarkReadNoti(id);
+            if (reponse.IsSuccess)
+            {
+                return Ok(reponse);
+            }
+            return BadRequest(reponse);
+        }
+
         [HttpDelete("RemoveNotification/{id}")]
         public async Task<IActionResult> RemoveNotification(int id)
         {

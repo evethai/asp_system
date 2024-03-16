@@ -13,5 +13,7 @@ namespace Application.Interfaces.Services
         Task<IEnumerable<NotificationDTO>> GetAllNotification();
         Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti, string userid);
         Task<ResponseDTO> RemoveNotification(int id);
+        Task<ResponseDTO> MarkReadNoti(int id);
+        
     }
 }

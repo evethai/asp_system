@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -34,7 +35,9 @@ namespace Domain.Model
         public string ? NotificationTitle { get; set; }
         public string ? NotificationDescription { get; set; }
         public bool ? isRead { get; set; }
-
+        public DateTime dateTime { get; set; }
+        public NotiStatus notiStatus { get; set; }
+        public string? nameUser {  get; set; }
         public string artwordUrl {  get; set; }
     }
 }

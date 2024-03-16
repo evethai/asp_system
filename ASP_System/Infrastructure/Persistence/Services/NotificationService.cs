@@ -59,6 +59,27 @@ namespace Infrastructure.Persistence.Services
             return _mapper.Map<NotificationDTO>(Noti);
         }
 
+        public async Task<ResponseDTO> MarkReadNoti(int id)
+        {
+            try
+            {
+                var notification = _unitOfWork.Repository<Notification>().GetQueryable().FirstOrDefault(a => a.Id == id);
+                if (notification == null)
+                {
+                    return (new ResponseDTO { IsSuccess = false, Message = "Notication not found" });
+                }
+
+                notification.IsRead = true;
+                await _unitOfWork.Repository<Notification>().UpdateAsync(notification);
+                _unitOfWork.Save();
+                return (new ResponseDTO { IsSuccess = true, Message = "Notication updated successfully",});
+            }
+            catch (Exception ex)
+            {
+                return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
+            }
+        }
+
         public async Task<ResponseDTO> RemoveNotification(int id)
         {
             try

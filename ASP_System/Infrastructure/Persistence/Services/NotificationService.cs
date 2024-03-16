@@ -24,13 +24,12 @@ namespace Infrastructure.Persistence.Services
             _userManager = userManager;
         }
 
-        public Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti, string userid)
+        public Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti)
         {
             try
             {
-                var user = _userManager.FindByIdAsync(userid);
                 var newNotification = new Notification
-                {
+                {                  
                     Title = noti.Title,
                     Description = noti.Description,
                     notiStatus = noti.notiStatus,
@@ -39,7 +38,7 @@ namespace Infrastructure.Persistence.Services
                 };
                 _unitOfWork.Repository<Notification>().AddAsync(newNotification);
                 _unitOfWork.Save();
-                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Notification added successfully", Data = noti });
+                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Notification added successfully", Data = newNotification });
             }
             catch (Exception ex)
             {
@@ -57,6 +56,27 @@ namespace Infrastructure.Persistence.Services
         {
             var Noti = await _unitOfWork.Repository<Notification>().GetByIdAsync(id);
             return _mapper.Map<NotificationDTO>(Noti);
+        }
+
+        public async Task<ResponseDTO> MarkReadNoti(int id)
+        {
+            try
+            {
+                var notification = _unitOfWork.Repository<Notification>().GetQueryable().FirstOrDefault(a => a.Id == id);
+                if (notification == null)
+                {
+                    return (new ResponseDTO { IsSuccess = false, Message = "Notication not found" });
+                }
+
+                notification.IsRead = true;
+                await _unitOfWork.Repository<Notification>().UpdateAsync(notification);
+                _unitOfWork.Save();
+                return (new ResponseDTO { IsSuccess = true, Message = "Notication updated successfully",});
+            }
+            catch (Exception ex)
+            {
+                return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
+            }
         }
 
         public async Task<ResponseDTO> RemoveNotification(int id)

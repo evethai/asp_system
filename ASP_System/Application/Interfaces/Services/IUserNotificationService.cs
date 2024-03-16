@@ -10,7 +10,7 @@ namespace Application.Interfaces.Services
     public interface IUserNotificationService
     {
         Task<IEnumerable<GetUserNotificationDTO>> GetNotificationByUserId(string userid);
-        Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti, string userid);
+        Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti);
         Task<ResponseDTO> RemoveUserNotification(int id);
         Task<ResponseDTO> RemoveAllUserNotificationsByUserId(string userId);
     }

@@ -27,11 +27,11 @@ namespace Infrastructure.Persistence.Services
             _userManager = userManager;
         }
 
-        public async Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti, string userid)
+        public async Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userid);
+                var user = await _userManager.FindByIdAsync(noti.userId);
 
                 if (user == null)
                 {
@@ -40,6 +40,7 @@ namespace Infrastructure.Persistence.Services
 
                 var newUserNotification = new UserNofitication
                 {
+                    
                     ArtworkId = noti.ArtworkId,
                     NotificationId = noti.NotificationId,
                     User = user  // Assuming User property is related to ApplicationUser in UserNotification
@@ -89,11 +90,12 @@ namespace Infrastructure.Persistence.Services
         public async Task<IEnumerable<GetUserNotificationDTO>> GetNotificationByUserId(string userId)
         {
             var userNotifications = await _unitOfWork.Repository<UserNofitication>()
-             .GetQueryable()
-             .Where(noti => noti.User.Id == userId)
-             .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
-             .Include(x => x.Notification)
-             .ToListAsync();
+            .GetQueryable()
+            .Where(noti => noti.User.Id == userId)
+            .Include(x=> x.User)
+            .Include(x => x.Artwork).ThenInclude(x=>x.ArtworkImages)
+            .Include(x => x.Notification)
+            .ToListAsync();
             var userNotificationDTOs = userNotifications.Select(notification => new GetUserNotificationDTO
             {
                 Id = notification.Id,
@@ -101,6 +103,9 @@ namespace Infrastructure.Persistence.Services
                 NotificationTitle = notification.Notification?.Title,
                 NotificationDescription = notification.Notification?.Description,
                 isRead = notification.Notification.IsRead,
+                nameUser = notification.User.LastName + " " + notification.User.FirstName,
+                dateTime = notification.Notification.Date,
+                notiStatus = notification.Notification.notiStatus,
                 artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image
             }).ToList();
             return userNotificationDTOs;

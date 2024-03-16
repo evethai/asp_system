@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Model;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
@@ -15,6 +16,7 @@ namespace API.Service
         //string CreateToken(UserSignInDTO user, List<Claim> roles);
         string CreateToken(ApplicationUser user, IList<String> roles);
         string CreateRefeshToken();
+        ClaimsPrincipal? GetPrincipalFromExpiredToken(String? token);
     }
     public class JwtTokenService : IJwtTokenService
     {
@@ -39,6 +41,7 @@ namespace API.Service
             var authClaims = new List<Claim>
             {
                 new Claim("userId", user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
@@ -61,6 +64,20 @@ namespace API.Service
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
+        {
+            var validation = new TokenValidationParameters
+            {
+                ValidateLifetime = false,
+                ValidAudience = _configuration["JWT:ValidAudience"],
+                ValidIssuer = _configuration["JWT:ValidIssuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]))
+            };
+
+            return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using API.Service;
+﻿    using API.Service;
 using Application.Interfaces.Services;
 using Domain.Entities;
 using Domain.Enums;
@@ -48,6 +48,13 @@ namespace API.Controllers
             return StatusCode(500);
         }
 
+        [Authorize]
+        [HttpGet("GetValue")]
+        public async Task<IActionResult> GetValue()
+        {
+            return Ok("Oke");
+        }
+
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn(UserSignInDTO signInModel)
         {
@@ -59,9 +66,30 @@ namespace API.Controllers
             }
             var userRoles = await _userManager.GetRolesAsync(user);
             var accessToken = _jwtTokenService.CreateToken(user, userRoles);
-            var refeshToken = _jwtTokenService.CreateRefeshToken();
-            return Ok(new { token = accessToken, refeshToken });
+            var refreshToken = _jwtTokenService.CreateRefeshToken();
+            user.RefreshToken = refreshToken;
+            user.DateExpireRefreshToken = DateTime.Now.AddDays(7);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return Ok(new { token = accessToken, refreshToken });
         }
+
+        [Authorize]
+        [HttpDelete("SignOut")]
+        public async Task<IActionResult> SignOut()
+        {
+            var userName = HttpContext.User.Identity?.Name;
+            if (userName is null)
+                return Unauthorized();
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user is null)
+                return Unauthorized();
+            user.RefreshToken = null;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
         [Authorize]
         [HttpGet("currentUser")]
         public async Task<IActionResult> getCurrentUserId()
@@ -76,15 +104,15 @@ namespace API.Controllers
             return listUser;
         }
         [Authorize]
-        [HttpPost("refesh-token")]
-        public async Task<IActionResult> refeshToken(string refeshToken)
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> refeshToken(string refreshToken)
         {
             var userId = _currentUserSerivice.GetUserId();
             var user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user == null || !user.IsActive)
+            if (user == null || !user.IsActive || user.RefreshToken != refreshToken || user.DateExpireRefreshToken < DateTime.UtcNow)
             {
                 return BadRequest(new { processStatus = ProcessStatus.NotPermission });
-            }
+            } 
             var userRoles = await _userManager.GetRolesAsync(user);
             var newRefreshToken = _jwtTokenService.CreateRefeshToken();
             user.RefreshToken = newRefreshToken;
@@ -99,6 +127,13 @@ namespace API.Controllers
         public async Task<IActionResult> GetAllUser(string id)
         {
             var result = await _userServices.GetUserByIDlAsync(id);
+            return Ok(result);
+        }
+        [Authorize]
+        [HttpGet("GetUser")]
+        public async Task<IActionResult> GetUser()
+        {
+            var result = await _currentUserSerivice.User();
             return Ok(result);
         }
     }

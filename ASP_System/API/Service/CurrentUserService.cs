@@ -11,6 +11,7 @@ namespace API.Service
     {
         Guid GetUserId();
         String getUserEmail();
+        Task<ApplicationUser> User();
     }
 
     public class CurrentUserService : ICurrentUserService
@@ -33,17 +34,17 @@ namespace API.Service
         }
         public Guid GetUserId()
         {
-            var httpContext = _httpContextAccessor.HttpContext;
-            //if(httpContext == null)
-            //{
-            //    httpContext = _actionContextAccessor.ActionContext?.HttpContext;
-            //}
             return Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value);
-            //var result =  _userManager.GetUserId(HttpContext.User);
         }
         public String getUserEmail()
         {
             return _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        }
+
+        public async Task<ApplicationUser> User()
+        {
+            var userId = GetUserId();
+            return await _userManager.FindByIdAsync(userId.ToString());
         }
     }
 }

@@ -8,6 +8,7 @@ using Domain.Model;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,35 +102,19 @@ namespace Infrastructure.Persistence.Services
             return PosterDTOList;
         }
 
-        public async Task<PosterDTO> GetPosterById(int id)
+        public async Task<PosterDTO> GetPosterByUserId(string UserId)
         {
-           var result = await _unitOfWork.Repository<Poster>().GetByIdAsync(id);
-           PosterDTO post = _mapper.Map<PosterDTO>(result);
-           post.UserId = await _unitOfWork.Repository<Poster>().GetQueryable().Where(a => a.Id == id).Select(a => a.User.Id).FirstOrDefaultAsync();
-           return post;
+           var result = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p=>p.User.Id == UserId);
+           if(result != null && result.QuantityPost >= 1)
+            {
+                PosterDTO post = _mapper.Map<PosterDTO>(result);
+                post.UserId=UserId;
+                return post;
+            }
+            else
+            {
+                return null;
+            }          
         }
-
-        //public Task<ResponseDTO> QuantityExtensionPost(PosterAddDTO post) // Gia hạn thêm khi hết gói cước Post bài
-        //{
-        //    try
-        //    {
-        //        var CheckQuantityPost = _unitOfWork.Repository<Package>().GetQueryable().FirstOrDefault(p=>p.Id == post.PackageId);               
-        //        if (CheckQuantityPost != null)
-        //        {
-        //            var CheckPostId = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.User.Id == post.UserId);
-        //            var update = _mapper.Map<Poster>(CheckPostId);
-        //            update.QuantityPost = update.QuantityPost + CheckQuantityPost.Quantity;
-        //            update.PackageId = post.PackageId;
-        //            _unitOfWork.Repository<Poster>().UpdateAsync(update);
-        //            _unitOfWork.Save();
-        //            return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Poster updated successfully", Data = CheckPostId });
-        //        }
-        //        return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Package not found" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
-        //    }
-        //}
     }
 }

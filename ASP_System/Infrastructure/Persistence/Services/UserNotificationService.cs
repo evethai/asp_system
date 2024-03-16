@@ -135,5 +135,10 @@ namespace Infrastructure.Persistence.Services
                 return new ResponseDTO { IsSuccess = false, Message = ex.Message };
             }
         }
+
+        //public Task<ResponseDTO> AddNoticationForAdmin()
+        //{
+        //    userIdAdmin = _unitOfWork.Repository().GetQueryable<User>().Where(x=);
+        //}
     }
 }

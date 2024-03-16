@@ -13,5 +13,6 @@ namespace Application.Interfaces.Services
         Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti);
         Task<ResponseDTO> RemoveUserNotification(int id);
         Task<ResponseDTO> RemoveAllUserNotificationsByUserId(string userId);
+        //Task<ResponseDTO> AddNoticationForAdmin();
     }
 }

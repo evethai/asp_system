@@ -24,13 +24,12 @@ namespace Infrastructure.Persistence.Services
             _userManager = userManager;
         }
 
-        public Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti, string userid)
+        public Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti)
         {
             try
             {
-                var user = _userManager.FindByIdAsync(userid);
                 var newNotification = new Notification
-                {
+                {                  
                     Title = noti.Title,
                     Description = noti.Description,
                     notiStatus = noti.notiStatus,
@@ -39,7 +38,7 @@ namespace Infrastructure.Persistence.Services
                 };
                 _unitOfWork.Repository<Notification>().AddAsync(newNotification);
                 _unitOfWork.Save();
-                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Notification added successfully", Data = noti });
+                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Notification added successfully", Data = newNotification });
             }
             catch (Exception ex)
             {

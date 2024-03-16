@@ -23,6 +23,8 @@ namespace Domain.Model
 
     public class CreateUserNotificationDTO
     {
+        [Required(ErrorMessage = "userID is required")]
+        public string? userId { get; set; }
         [Required(ErrorMessage = "Title is required")]
         public int? NotificationId { get; set; }
         [Required(ErrorMessage = "Title is required")]

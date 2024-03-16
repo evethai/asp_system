@@ -36,14 +36,13 @@ namespace API.Controllers
             var result = await _notificationService.GetNotificationById(id);
             return Ok(result);
         }
-        [Authorize]
         [HttpPost("CreateNotification")]
-        public async Task<IActionResult> CreateNotification([FromForm] CreateNotificationDTO noti)
+        public async Task<IActionResult> CreateNotification( CreateNotificationDTO noti)
         {
             try
             {
-                var userid = _currentUserService.GetUserId();
-                var result = await _notificationService.CreateNotification(noti, userid.ToString());
+                //var userid = _currentUserService.GetUserId();
+                var result = await _notificationService.CreateNotification(noti);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -27,11 +27,11 @@ namespace Infrastructure.Persistence.Services
             _userManager = userManager;
         }
 
-        public async Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti, string userid)
+        public async Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userid);
+                var user = await _userManager.FindByIdAsync(noti.userId);
 
                 if (user == null)
                 {
@@ -40,6 +40,7 @@ namespace Infrastructure.Persistence.Services
 
                 var newUserNotification = new UserNofitication
                 {
+                    
                     ArtworkId = noti.ArtworkId,
                     NotificationId = noti.NotificationId,
                     User = user  // Assuming User property is related to ApplicationUser in UserNotification

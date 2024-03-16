@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using API.Helper;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
@@ -136,9 +137,27 @@ namespace Infrastructure.Persistence.Services
             }
         }
 
-        //public Task<ResponseDTO> AddNoticationForAdmin()
-        //{
-        //    userIdAdmin = _unitOfWork.Repository().GetQueryable<User>().Where(x=);
-        //}
+        public async Task<ResponseDTO> AddNoticationForAdmin(CreateAdminNotificationDTO noti)
+        {
+            var userIdAdmin = await _userManager.GetUsersInRoleAsync(AppRole.Admin);
+                foreach (var item in userIdAdmin)
+                {
+                    var user = await _userManager.FindByIdAsync(item.Id);
+                    var newUserNotification = new UserNofitication
+                    {
+                        ArtworkId = noti.ArtworkId,
+                        NotificationId = noti.NotificationId,
+                        User = user  // Assuming User property is related to ApplicationUser in UserNotification
+                    };
+
+                _unitOfWork.Repository<UserNofitication>().AddAsync(newUserNotification);
+                    _unitOfWork.Save();  // Assuming SaveAsync is an asynchronous method
+
+                }
+
+            return await Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Notification added successfully"});
+            
+            
+        }
     }
 }

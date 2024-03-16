@@ -1,5 +1,6 @@
 ﻿using API.Service;
 using Application.Interfaces.Services;
+using Domain.Entities;
 using Domain.Model;
 using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -67,6 +68,19 @@ namespace API.Controllers
             }
 
             return BadRequest(response); // 400 Bad Request
+        }
+        [HttpPost("AddNotiForadmin")]
+        public async Task<ResponseDTO> AddNoticationForAdmin(CreateAdminNotificationDTO noti)
+        {
+            try
+            {
+                var result = await _userNotificationService.AddNoticationForAdmin(noti);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

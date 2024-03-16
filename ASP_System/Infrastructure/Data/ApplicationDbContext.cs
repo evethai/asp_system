@@ -22,6 +22,7 @@ namespace Infrastructure.Data
         public DbSet<Package> Package { get; set; }
         public DbSet<Poster> Poster { get; set; }
         public DbSet<Notification> Notification { get; set; }
+        public DbSet<Comment> Comment { get; set; }
 
         private class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<ApplicationUser>
         {

@@ -14,8 +14,6 @@ namespace Domain.Model
         public int Id { get; set; }
         public int? PackageId { get; set; }
         public int? QuantityPost { get; set; }
-
-        public Package Package { get; set; }
         public string UserId { get; set; }
     }
     public class PosterAddDTO

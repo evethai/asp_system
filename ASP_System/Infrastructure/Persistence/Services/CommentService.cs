@@ -71,5 +71,37 @@ namespace Infrastructure.Persistence.Services
 				return new ResponseDTO { IsSuccess = false, Message = ex.Message };
 			}
 		}
+
+		public async Task<ResponseDTO> DeleteComent(int CommentId)
+		{
+			var CheckId = await _unitOfWork.Repository<Comment>().GetByIdAsync(CommentId);
+			if (CheckId != null)
+			{
+				await _unitOfWork.Repository<Comment>().DeleteAsync(CheckId);
+				_unitOfWork.Save();
+				return new ResponseDTO { IsSuccess = true, Message = "Comment delete successfully" };
+			}
+			else
+			{
+				return new ResponseDTO { IsSuccess = false, Message = "Comments delete fail" };
+			}
+		}
+
+		public async Task<ResponseDTO> UpdateComment(CommentUpdateDTO cmt)
+		{
+			var ckeckId = _unitOfWork.Repository<Comment>().GetQueryable().Where(p=>p.Id == cmt.Id).FirstOrDefault();
+			if (ckeckId != null)
+			{
+				var result = _mapper.Map<Comment>(ckeckId);
+				result.Content = cmt.Content;
+				_unitOfWork.Repository<Comment>().UpdateAsync(result);
+				_unitOfWork.Save();
+				return  new ResponseDTO { IsSuccess = true, Message = "Comment update successfully" };
+			}
+			else
+			{
+				return new ResponseDTO { IsSuccess = false, Message = "Comments added fail" };
+			}
+		}
 	}
 }

@@ -37,5 +37,31 @@ namespace API.Controllers
 				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 			}
 		}
+		[HttpDelete("DeleteCommment")]
+		public async Task<IActionResult> DeleteComent(int CommentId)
+		{
+			try
+			{
+				var result = await _commentService.DeleteComent(CommentId);
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			}
+		}
+		[HttpPut("UpdateComment")]
+		public async Task<IActionResult> UpdateComment(CommentUpdateDTO cmt)
+		{
+			try
+			{
+				var result = await _commentService.UpdateComment(cmt);
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			}
+		}
 	}
 }

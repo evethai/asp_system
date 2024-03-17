@@ -1,5 +1,6 @@
 ﻿using API.Service;
 using Application.Interfaces.Services;
+using Domain.Entities;
 using Domain.Model;
 using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -19,14 +20,12 @@ namespace API.Controllers
             _userNotificationService = notiService;
             _currentUserService = currentUserService;
         }
-        [Authorize]
         [HttpPost("CreateNotification")]
-        public async Task<IActionResult> CreateUserNotification([FromForm] CreateUserNotificationDTO noti)
+        public async Task<IActionResult> CreateUserNotification( CreateUserNotificationDTO noti)
         {
             try
             {
-                var userid = _currentUserService.GetUserId();
-                var result = await _userNotificationService.CreateUserNotification(noti, userid.ToString());
+                var result = await _userNotificationService.CreateUserNotification(noti);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -34,7 +33,7 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("{userId}/notifications")]
+        [HttpGet("{userId}")]
         public async Task<ActionResult<IEnumerable<GetUserNotificationDTO>>> GetNotificationByUserId(string userId)
         {
             var notifications = await _userNotificationService.GetNotificationByUserId(userId);
@@ -69,6 +68,19 @@ namespace API.Controllers
             }
 
             return BadRequest(response); // 400 Bad Request
+        }
+        [HttpPost("AddNotiForadmin")]
+        public async Task<ResponseDTO> AddNoticationForAdmin(CreateAdminNotificationDTO noti)
+        {
+            try
+            {
+                var result = await _userNotificationService.AddNoticationForAdmin(noti);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

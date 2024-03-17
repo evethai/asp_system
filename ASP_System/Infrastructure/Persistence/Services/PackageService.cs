@@ -31,7 +31,7 @@ namespace Infrastructure.Persistence.Services
                 var newPackage = _mapper.Map<Package>(package);
                 _unitOfWork.Repository<Package>().AddAsync(newPackage);
                 _unitOfWork.Save();
-                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Package added successfully", Data = package });
+                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Package added successfully", Data = newPackage });
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace Infrastructure.Persistence.Services
                     update.Status = false;
                     _unitOfWork.Repository<Package>().UpdateAsync(update);
                     _unitOfWork.Save();
-                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Package delete successfully", Data = checkId });
+                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Package delete successfully", Data = update });
                 }
             }
             catch (Exception ex)
@@ -88,7 +88,7 @@ namespace Infrastructure.Persistence.Services
                     var update = _mapper.Map<Package>(package);
                     _unitOfWork.Repository<Package>().UpdateAsync(update);
                     _unitOfWork.Save();
-                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Package updated successfully", Data = package });
+                    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Package updated successfully", Data = update });
                 }
             }
             catch (Exception ex)

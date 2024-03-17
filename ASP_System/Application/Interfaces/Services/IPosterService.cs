@@ -11,7 +11,7 @@ namespace Application.Interfaces.Services
     {
         Task<IEnumerable<PosterDTO>> GetAllPoster();
         Task<ResponseDTO> AddPoster(PosterAddDTO post);
-        Task<PosterDTO> GetPosterById(int id);
+        Task<PosterDTO> GetPosterByUserId(string UserId);
         Task<ResponseDTO> DecreasePost(string userId);
         //Task<ResponseDTO> QuantityExtensionPost(PosterAddDTO post); 
     }

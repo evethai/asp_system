@@ -27,11 +27,11 @@ namespace Infrastructure.Persistence.Services
             _userManager = userManager;
         }
 
-        public Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork, string UserId)
+        public Task<ResponseDTO> AddArtwork(ArtworkAddDTO artwork)
         {
             try
             {
-                var user = _userManager.FindByIdAsync(UserId).Result;
+                var user = _userManager.FindByIdAsync(artwork.UserId).Result;
                 var newArtwork = new Artwork
                 {
                     Title = artwork.Title,
@@ -225,6 +225,8 @@ namespace Infrastructure.Persistence.Services
             foreach (var artwork in ArtworkDTOList)
             {
                 artwork.ImageUrl = _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.Image).ToList();
+                artwork.UserId = _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.User.Id).FirstOrDefault();
+                artwork.Categories = _unitOfWork.Repository<ArtworkHasCategory>().GetQueryable().Where(a => a.ArtworkId == artwork.ArtworkId).Select(a => a.CategoryId).ToList();
             }
             return Task.FromResult((IEnumerable<ArtworkDTO>)ArtworkDTOList);
         }

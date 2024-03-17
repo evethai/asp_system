@@ -51,7 +51,7 @@ namespace Domain.Model
 
         [Required(ErrorMessage = "Price is required")]
         public double? Price { get; set; }
-
+        public string UserId { get; set; }
         public int? ReOrderQuantity { get; set; }
 
         public List<string> ImagesUrl { get; set; }

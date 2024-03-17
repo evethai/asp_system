@@ -1,4 +1,5 @@
-﻿using Domain.Model;
+﻿using Domain.Entities;
+using Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,9 @@ namespace Application.Interfaces.Services
     public interface IUserNotificationService
     {
         Task<IEnumerable<GetUserNotificationDTO>> GetNotificationByUserId(string userid);
-        Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti, string userid);
+        Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti);
         Task<ResponseDTO> RemoveUserNotification(int id);
         Task<ResponseDTO> RemoveAllUserNotificationsByUserId(string userId);
+        Task<ResponseDTO> AddNoticationForAdmin(CreateAdminNotificationDTO noti);
     }
 }

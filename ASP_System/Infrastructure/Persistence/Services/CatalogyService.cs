@@ -29,7 +29,8 @@ namespace Infrastructure.Persistence.Services
                 var newCatalogy = _mapper.Map<Category>(catalogy);
                 _unitOfWork.Repository<Category>().AddAsync(newCatalogy);
                 _unitOfWork.Save();
-                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Catalogy added successfully", Data = catalogy });
+                //get id of data after add
+                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Catalogy added successfully", Data = newCatalogy });
             }catch (Exception ex)
             {
                 return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });

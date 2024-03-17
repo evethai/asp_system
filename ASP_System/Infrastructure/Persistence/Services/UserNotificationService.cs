@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using API.Helper;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
@@ -27,11 +28,11 @@ namespace Infrastructure.Persistence.Services
             _userManager = userManager;
         }
 
-        public async Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti, string userid)
+        public async Task<ResponseDTO> CreateUserNotification(CreateUserNotificationDTO noti)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userid);
+                var user = await _userManager.FindByIdAsync(noti.userId);
 
                 if (user == null)
                 {
@@ -40,6 +41,7 @@ namespace Infrastructure.Persistence.Services
 
                 var newUserNotification = new UserNofitication
                 {
+                    
                     ArtworkId = noti.ArtworkId,
                     NotificationId = noti.NotificationId,
                     User = user  // Assuming User property is related to ApplicationUser in UserNotification
@@ -91,7 +93,8 @@ namespace Infrastructure.Persistence.Services
             var userNotifications = await _unitOfWork.Repository<UserNofitication>()
             .GetQueryable()
             .Where(noti => noti.User.Id == userId)
-            .Include(x => x.Artwork)
+            .Include(x=> x.User)
+            .Include(x => x.Artwork).ThenInclude(x=>x.ArtworkImages)
             .Include(x => x.Notification)
             .ToListAsync();
             var userNotificationDTOs = userNotifications.Select(notification => new GetUserNotificationDTO
@@ -100,9 +103,13 @@ namespace Infrastructure.Persistence.Services
                 ArtworkTitle = notification.Artwork?.Title,
                 NotificationTitle = notification.Notification?.Title,
                 NotificationDescription = notification.Notification?.Description,
-                isRead = notification.Notification.IsRead
+                isRead = notification.Notification.IsRead,
+                nameUser = notification.User.LastName + " " + notification.User.FirstName,
+                dateTime = notification.Notification.Date,
+                notiStatus = notification.Notification.notiStatus,
+                artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image
             }).ToList();
-            return _mapper.Map<List<GetUserNotificationDTO>>(userNotificationDTOs);
+            return userNotificationDTOs;
         }
 
 
@@ -128,6 +135,29 @@ namespace Infrastructure.Persistence.Services
                 // Log or handle the exception as needed
                 return new ResponseDTO { IsSuccess = false, Message = ex.Message };
             }
+        }
+
+        public async Task<ResponseDTO> AddNoticationForAdmin(CreateAdminNotificationDTO noti)
+        {
+            var userIdAdmin = await _userManager.GetUsersInRoleAsync(AppRole.Admin);
+                foreach (var item in userIdAdmin)
+                {
+                    var user = await _userManager.FindByIdAsync(item.Id);
+                    var newUserNotification = new UserNofitication
+                    {
+                        ArtworkId = noti.ArtworkId,
+                        NotificationId = noti.NotificationId,
+                        User = user  // Assuming User property is related to ApplicationUser in UserNotification
+                    };
+
+                _unitOfWork.Repository<UserNofitication>().AddAsync(newUserNotification);
+                    _unitOfWork.Save();  // Assuming SaveAsync is an asynchronous method
+
+                }
+
+            return await Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Notification added successfully"});
+            
+            
         }
     }
 }

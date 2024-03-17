@@ -32,7 +32,6 @@ namespace API.Controllers
         {
             try
             {
-                //var userId = _currentUserService.GetUserId();
                 var result = await _posterService.AddPoster(post);
                 return Ok(result);
             }
@@ -41,10 +40,10 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPostById(int id)
+        [HttpGet("{UserId}")]
+        public async Task<IActionResult> GetPostByUserId(string UserId)
         {
-            var result = await _posterService.GetPosterById(id);
+            var result = await _posterService.GetPosterByUserId(UserId);
             return Ok(result);
         }
         [HttpPut("DecreasePost")]
@@ -61,31 +60,5 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        //[HttpPut("Update")]
-        //public async Task<IActionResult> UpdatePost(int id, PosterDTO post)
-        //{
-        //    try
-        //    {
-        //        var result = await _posterService.UpdatePost(id, post);
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-        //[HttpPut("QuantityExtensionPost")]
-        //public async Task<IActionResult> QuantityExtensionPost(PosterAddDTO post)
-        //{
-        //    try
-        //    {
-        //        var result = await _posterService.QuantityExtensionPost(post);
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
     }
 }

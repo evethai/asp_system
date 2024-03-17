@@ -122,7 +122,21 @@ namespace Infrastructure.Persistence.Services
                 {
                     await _roleManager.CreateAsync(new IdentityRole(AppRole.Customer));
                 }
-                await _userManager.AddToRoleAsync(user, AppRole.Customer);
+
+                if(! await _roleManager.RoleExistsAsync(AppRole.Admin))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(AppRole.Admin));
+                }
+                if(model.IsAdmin)
+                {
+                    await _userManager.AddToRoleAsync(user, AppRole.Admin);
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, AppRole.Customer);
+                }
+
+                //await _userManager.AddToRoleAsync(user, AppRole.Customer);
             }
             return result;
         }

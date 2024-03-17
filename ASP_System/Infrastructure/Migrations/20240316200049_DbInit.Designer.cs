@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240312090501_DbInit")]
+    [Migration("20240316200049_DbInit")]
     partial class DbInit
     {
         /// <inheritdoc />
@@ -222,6 +222,33 @@ namespace Infrastructure.Migrations
                     b.ToTable("Category");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArtworkId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArtworkId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("Domain.Entities.Follower", b =>
                 {
                     b.Property<int>("FollowerId")
@@ -271,7 +298,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("Date")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -284,6 +311,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("notiStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -569,6 +599,23 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Artwork");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Comment", b =>
+                {
+                    b.HasOne("Domain.Entities.Artwork", "Artwork")
+                        .WithMany()
+                        .HasForeignKey("ArtworkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Artwork");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Follower", b =>

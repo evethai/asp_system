@@ -48,6 +48,51 @@ builder.Services.AddAuthentication(options => {
     };
 });
 
+
+//cấu hình login google, facebook
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions =>
+    {
+        IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+        googleOptions.ClientId = googleAuthNSection["ClientId"];
+        googleOptions.ClientSecret = googleAuthNSection["ClientSecret"];
+        googleOptions.CallbackPath = "/signin-google";
+    })
+    .AddFacebook(facebookOptions => {
+        IConfigurationSection facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
+        facebookOptions.AppId = facebookAuthNSection["AppId"];
+        facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
+        facebookOptions.CallbackPath = "/signin-facebook";
+        facebookOptions.AccessDeniedPath = "/access-denied";
+    });
+
+
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Thiết lập về Password
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequiredUniqueChars = 0;
+    //// Cấu hình Lockout - khóa user
+    //options.Lockout.AllowedForNewUsers = true;
+    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+    //options.Lockout.MaxFailedAccessAttempts = 7;
+    //options.Lockout.AllowedForNewUsers = true;
+    //// Cấu hình về User.
+    //options.User.AllowedUserNameCharacters =
+    //    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    //options.User.RequireUniqueEmail = true;
+    //// Cấu hình đăng nhập.
+    //options.SignIn.RequireConfirmedEmail = true;
+    //options.SignIn.RequireConfirmedPhoneNumber = false;
+    //options.SignIn.RequireConfirmedAccount = true;
+});
+
+
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "ASP.System API", Version = "v1" });
@@ -95,6 +140,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

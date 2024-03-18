@@ -14,6 +14,8 @@ namespace Application.Interfaces.Services
         Task<ResponseDTO> CreateNotification(CreateNotificationDTO noti);
         Task<ResponseDTO> RemoveNotification(int id);
         Task<ResponseDTO> MarkReadNoti(int id);
+
+        Task<ResponseDTO> UpdateStatusNoti(UpdateNotiStatusDTO dto);
         
     }
 }

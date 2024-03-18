@@ -107,7 +107,9 @@ namespace Infrastructure.Persistence.Services
                 nameUser = notification.User.LastName + " " + notification.User.FirstName,
                 dateTime = notification.Notification.Date,
                 notiStatus = notification.Notification.notiStatus,
-                artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image
+                artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image,
+                artworkId = notification.ArtworkId.Value,
+                notificationId = notification.NotificationId.Value
             }).ToList();
             return userNotificationDTOs;
         }
@@ -151,7 +153,7 @@ namespace Infrastructure.Persistence.Services
                     };
 
                 _unitOfWork.Repository<UserNofitication>().AddAsync(newUserNotification);
-                    _unitOfWork.Save();  // Assuming SaveAsync is an asynchronous method
+                _unitOfWork.Save();  // Assuming SaveAsync is an asynchronous method
 
                 }
 

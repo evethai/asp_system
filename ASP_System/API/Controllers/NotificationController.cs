@@ -80,5 +80,16 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
             }
         }
+
+        [HttpPut("UpdateStatusNoti")]
+        public async Task<IActionResult> UpdateStatusNoti(UpdateNotiStatusDTO dto)
+        {
+			var reponse = await _notificationService.UpdateStatusNoti(dto);
+			if (reponse.IsSuccess)
+            {
+				return Ok(reponse);
+			}
+			return BadRequest(reponse);
+		}
     }
 }

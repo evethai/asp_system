@@ -51,4 +51,6 @@ namespace Domain.Model
         public int artworkId {  get; set; }
         public int notificationId {  get; set; }
     }
+
+
 }

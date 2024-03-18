@@ -58,7 +58,7 @@ namespace API.Controllers
 
 
         //post add
-        //[Authorize]
+        [Authorize]
         [HttpPost ("AddArtwork")]
         public async Task<IActionResult> AddArtwork( ArtworkAddDTO artwork)
         {
@@ -73,7 +73,7 @@ namespace API.Controllers
         }
 
         //put update
-        //[Authorize]
+        [Authorize]
         [HttpPut("UpdateArtwork")]
         public async Task<IActionResult> UpdateArtwork(ArtworkUpdateDTO artwork)
         {

@@ -86,7 +86,6 @@ namespace Infrastructure.Persistence.Services
             if (result.Succeeded)
             {
                 return await _userManager.FindByEmailAsync(model.Email);
-               
             }
             return null;
         }

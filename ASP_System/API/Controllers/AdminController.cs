@@ -1,14 +1,17 @@
-﻿using API.Service;
+﻿using API.Helper;
+using API.Service;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Model;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
-    [Route("api/admin/[controller]")]
+    [Authorize(Roles = AppRole.Admin)]
+    [Route("api/admin/")]
     public class AdminController : ControllerBase
     {
         private readonly ILogger<AdminController> _logger;
@@ -24,7 +27,6 @@ namespace API.Controllers
             _roleManager = roleManager;
 
         }
-
         #region RoleManagement
 
         #region CRUDRole
@@ -155,7 +157,6 @@ namespace API.Controllers
                 {
                     return Ok(ProcessStatus.Fail);
                 }
-
                  result = await _userManager.AddToRolesAsync(user, addRoles);
                 if (result.Succeeded)
                 {
@@ -169,7 +170,6 @@ namespace API.Controllers
 
 
         #endregion
-
     }
 }
 

@@ -14,7 +14,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = AppRole.Customer)]
+    [Authorize(Roles = (AppRole.Admin_Customer))]
     [ApiController]
     
     public class ArtworkController : ControllerBase

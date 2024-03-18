@@ -32,7 +32,7 @@ public static class DependencyInjection
         services.AddScoped<IPosterService, PosterService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<ILikeService, LikeService>();
-
+        services.AddScoped<ICommentService, CommentService>();
         return services;
     }
 }

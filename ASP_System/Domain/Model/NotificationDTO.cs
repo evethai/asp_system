@@ -27,5 +27,10 @@ namespace Domain.Model
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; } = string.Empty;
         public NotiStatus notiStatus { get; set; }
-}
+    }
+    public class UpdateNotiStatusDTO
+    {
+        public int Id { get; set; }
+		public NotiStatus notiStatus { get; set; }
+	}
 }

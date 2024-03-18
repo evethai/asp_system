@@ -73,9 +73,9 @@ namespace API.Controllers
         }
 
         //put update
-        [Authorize]
+        //[Authorize]
         [HttpPut("UpdateArtwork")]
-        public async Task<IActionResult> UpdateArtwork([FromForm]ArtworkUpdateDTO artwork)
+        public async Task<IActionResult> UpdateArtwork(ArtworkUpdateDTO artwork)
         {
             var reponse = await _artworkService.UpdateArtwork(artwork);
             if (reponse.IsSuccess)

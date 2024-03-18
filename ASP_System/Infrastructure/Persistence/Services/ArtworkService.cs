@@ -46,6 +46,15 @@ namespace Infrastructure.Persistence.Services
                 _unitOfWork.Repository<Artwork>().AddAsync(newArtwork);
                 _unitOfWork.Save();
 
+                ArtworkDTO artworkDTO = new ArtworkDTO
+                {
+                    ArtworkId = newArtwork.ArtworkId,
+                    Title = newArtwork.Title,
+                    Description = newArtwork.Description,
+                    Price = newArtwork.Price,
+                    ReOrderQuantity = newArtwork.ReOrderQuantity
+                };
+
                 //Add Artwork Images
                 if (artwork.ImagesUrl != null && artwork.ImagesUrl.Any())
                 {
@@ -76,7 +85,7 @@ namespace Infrastructure.Persistence.Services
                 }
 
 
-                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Artwork added successfully", Data = artwork });
+                return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Artwork added successfully", Data = artworkDTO });
             }
             catch (Exception ex)
             {
@@ -178,12 +187,12 @@ namespace Infrastructure.Persistence.Services
 
         private Artwork submitCourseChange(Artwork existingArtwork, ArtworkUpdateDTO artwork)
         {
-            existingArtwork.Title = artwork.Title;
-            existingArtwork.Description = artwork.Description;
-            existingArtwork.Price = artwork.Price;
-            existingArtwork.ReOrderQuantity = artwork.ReOrderQuantity;
+            //existingArtwork.Title = artwork.Title;
+            //existingArtwork.Description = artwork.Description;
+            //existingArtwork.Price = artwork.Price;
+            //existingArtwork.ReOrderQuantity = artwork.ReOrderQuantity;
             existingArtwork.Status = artwork.Status;
-            existingArtwork.UpdateOn = DateTime.Now;
+            //existingArtwork.UpdateOn = DateTime.Now;
 
             return existingArtwork;
         }

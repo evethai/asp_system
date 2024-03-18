@@ -25,5 +25,6 @@ namespace Domain.Model
     public class LikeCreateDTO
     {   
         public int? ArtworkId { get; set; }
+        public string UserId { get; set; }
     }
 }

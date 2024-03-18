@@ -101,5 +101,17 @@ namespace Infrastructure.Persistence.Services
             }
         }
 
-    }
+		public async Task<ResponseDTO> UpdateStatusNoti(UpdateNotiStatusDTO dto)
+		{
+			var notification = await _unitOfWork.Repository<Notification>().GetByIdAsync(dto.Id);
+            if (notification == null)
+            {
+				return (new ResponseDTO { IsSuccess = false, Message = "Notification not found" });
+			}
+            notification.notiStatus = dto.notiStatus;
+			await _unitOfWork.Repository<Notification>().UpdateAsync(notification);
+			_unitOfWork.Save();
+			return (new ResponseDTO { IsSuccess = true, Message = "Notification status updated successfully", Data = notification });
+		}
+	}
 }

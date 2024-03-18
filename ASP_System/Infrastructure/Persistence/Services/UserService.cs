@@ -34,12 +34,14 @@ namespace Infrastructure.Persistence.Services
 
         public UserService() { }
         public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, IUnitOfWork unitOfWork, IMapper mapper)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._configuration = configuration;
             this._roleManager = roleManager;
+            this._unitOfWork = unitOfWork;
+            this._mapper = mapper;
         }
 
         public Task<IEnumerable<UserDTO>> GetAllUsers()
@@ -67,17 +69,39 @@ namespace Infrastructure.Persistence.Services
         //    // Optionally, you can also sign out from external authentication providers if used
         //    //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         //}
-        public Task<UserDTO> GetUserByIDlAsync(string id)
-        {
-            var user = _userManager.FindByIdAsync(id);
 
-            UserDTO userDTO = new UserDTO
+        public async Task<ProfileUserDTO> GetUserByIDlAsync(string userId)
+        {
+            var user = _userManager.FindByIdAsync(userId);
+            var artworkList =  _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.User.Id == user.Result.Id).ToList();
+            var ArtworkDTOList = _mapper.Map<List<ArtworkDTO>>(artworkList);
+
+            List<Artwork_Profile> artwork_Profiles = new List<Artwork_Profile>();
+            foreach (var artwork in ArtworkDTOList)
+            {
+                var likeNumber = _unitOfWork.Repository<Like>().GetQueryable().Where(p => p.Artwork.ArtworkId == artwork.ArtworkId).Count();
+                var commentNumber = _unitOfWork.Repository<Comment>().GetQueryable().Where(p => p.Artwork.ArtworkId == artwork.ArtworkId).Count();
+                var artwork_Profile = new Artwork_Profile
+                {
+                    ArtworkId = artwork.ArtworkId,
+                    Title = artwork.Title,
+                    Description = artwork.Description,
+                    Price = artwork.Price,
+                    LikeNumber = likeNumber,
+                    CommentNumber = commentNumber
+                };
+                artwork_Profiles.Add(artwork_Profile);
+            }
+
+            ProfileUserDTO dto = new ProfileUserDTO
             {
                 FirstName = user.Result.FirstName,
                 LastName = user.Result.LastName,
                 Birthday = user.Result.Birthday,
+                Email = user.Result.Email,
+                Artworks = artwork_Profiles
             };
-            return Task.FromResult(userDTO);
+            return (dto);
         }
 
         public async Task<ApplicationUser> SignInAsync(UserSignInDTO model)

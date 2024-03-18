@@ -37,7 +37,7 @@ namespace API.Controllers
             return Ok(result);
         }
         [HttpPost("CreateNotification")]
-        public async Task<IActionResult> CreateNotification( CreateNotificationDTO noti)
+        public async Task<IActionResult> CreateNotification(CreateNotificationDTO noti)
         {
             try
             {

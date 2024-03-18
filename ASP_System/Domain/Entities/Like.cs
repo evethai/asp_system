@@ -13,7 +13,7 @@ namespace Domain.Entities
         //Id	ArtworkId	UserId
         [Key]
         public int Id { get; set; }
-        public int? ArtworkId { get; set; }
+        //public int? ArtworkId { get; set; }
         //public int? UserId { get; set; }
 
         public Artwork Artwork { get; set; }

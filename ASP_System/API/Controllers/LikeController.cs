@@ -21,14 +21,13 @@ namespace API.Controllers
             _currentUserService = currentUserService;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("CreateLike")]
-        public async Task<IActionResult> CreateLike([FromForm] LikeCreateDTO like)
+        public async Task<IActionResult> CreateLike(LikeCreateDTO like)
         {
             try
-            {
-                var currentUser = _currentUserService.GetUserId();
-                var result = await _likeService.CreateLike(like, currentUser.ToString());
+            {               
+                var result = await _likeService.CreateLike(like);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -37,11 +36,11 @@ namespace API.Controllers
             }
         }
 
-        [Authorize]
-        [HttpPut("DeleteLike")]
-        public async Task<IActionResult> DeleteLike(LikeDeleteDTO like)
+        //[Authorize]
+        [HttpDelete("DeleteLike")]
+        public async Task<IActionResult> DeleteLike(int LikeId)
         {
-            var reponse = await _likeService.DeleteLike(like);
+            var reponse = await _likeService.DeleteLike(LikeId);
             if (reponse.IsSuccess)
             {
                 return Ok(reponse);
@@ -49,17 +48,17 @@ namespace API.Controllers
             return BadRequest(reponse);
         }
 
-        [HttpGet("GetLike{id}")]
-        public async Task<IActionResult> GetLike(int id)
-        {
-            var result = await _likeService.GetLike(id);
-            return Ok(result);
-        }
+        //[HttpGet("GetLike{id}")]
+        //public async Task<IActionResult> GetLike(int id)
+        //{
+        //    var result = await _likeService.GetLike(id);
+        //    return Ok(result);
+        //}
 
-        [HttpGet("GetAllLike")]
-        public async Task<IActionResult> GetAllLike()
+        [HttpGet("GetAllLikeByArtworkId")]
+        public async Task<IActionResult> GetAllLikeByArtworkId(int ArtworkId)
         {
-            var result = await _likeService.GetAllLike();
+            var result = await _likeService.GetAllLikeByArtworkId(ArtworkId);
             return Ok(result);
         }
     }

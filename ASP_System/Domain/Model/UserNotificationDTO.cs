@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,6 +23,15 @@ namespace Domain.Model
 
     public class CreateUserNotificationDTO
     {
+        [Required(ErrorMessage = "userID is required")]
+        public string? userId { get; set; }
+        [Required(ErrorMessage = "Title is required")]
+        public int? NotificationId { get; set; }
+        [Required(ErrorMessage = "Title is required")]
+        public int? ArtworkId { get; set; }
+    }
+    public class CreateAdminNotificationDTO
+    {
         [Required(ErrorMessage = "Title is required")]
         public int? NotificationId { get; set; }
         [Required(ErrorMessage = "Title is required")]
@@ -34,7 +44,11 @@ namespace Domain.Model
         public string ? NotificationTitle { get; set; }
         public string ? NotificationDescription { get; set; }
         public bool ? isRead { get; set; }
-
+        public DateTime dateTime { get; set; }
+        public NotiStatus notiStatus { get; set; }
+        public string? nameUser {  get; set; }
         public string artwordUrl {  get; set; }
+        public int artworkId {  get; set; }
+        public int notificationId {  get; set; }
     }
 }

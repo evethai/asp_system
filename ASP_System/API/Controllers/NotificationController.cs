@@ -36,14 +36,13 @@ namespace API.Controllers
             var result = await _notificationService.GetNotificationById(id);
             return Ok(result);
         }
-        [Authorize]
         [HttpPost("CreateNotification")]
-        public async Task<IActionResult> CreateNotification([FromForm] CreateNotificationDTO noti)
+        public async Task<IActionResult> CreateNotification( CreateNotificationDTO noti)
         {
             try
             {
-                var userid = _currentUserService.GetUserId();
-                var result = await _notificationService.CreateNotification(noti, userid.ToString());
+                //var userid = _currentUserService.GetUserId();
+                var result = await _notificationService.CreateNotification(noti);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -51,6 +50,18 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPut("MarkReadNoti")]
+        public async Task<IActionResult> MarkReadNoti(int id)
+        {
+            var reponse = await _notificationService.MarkReadNoti(id);
+            if (reponse.IsSuccess)
+            {
+                return Ok(reponse);
+            }
+            return BadRequest(reponse);
+        }
+
         [HttpDelete("RemoveNotification/{id}")]
         public async Task<IActionResult> RemoveNotification(int id)
         {
@@ -69,5 +80,16 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
             }
         }
+
+        [HttpPut("UpdateStatusNoti")]
+        public async Task<IActionResult> UpdateStatusNoti(UpdateNotiStatusDTO dto)
+        {
+			var reponse = await _notificationService.UpdateStatusNoti(dto);
+			if (reponse.IsSuccess)
+            {
+				return Ok(reponse);
+			}
+			return BadRequest(reponse);
+		}
     }
 }

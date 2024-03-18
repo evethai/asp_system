@@ -9,9 +9,9 @@ namespace Application.Interfaces.Services
 {
     public interface ILikeService
     {
-        Task<LikeDTO> GetLike(int ArtworkId);
-        Task<ResponseDTO> CreateLike(LikeCreateDTO like, string userId);
-        Task<ResponseDTO> DeleteLike(LikeDeleteDTO like);
-        Task<IEnumerable<LikeDTO>> GetAllLike();
+        //Task<LikeDTO> GetLike(int idLike);
+        Task<ResponseDTO> CreateLike(LikeCreateDTO like);
+        Task<ResponseDTO> DeleteLike(int LikeId);
+        Task<IEnumerable<LikeDTO>> GetAllLikeByArtworkId(int ArtworkId);
     }
 }

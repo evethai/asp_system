@@ -37,7 +37,7 @@ namespace Infrastructure.Persistence.Services
                 var checkId = _unitOfWork.Repository<Package>().GetQueryable().FirstOrDefault(c => c.Id == post.PackageId);
                 var user = await _userManager.FindByIdAsync(post.UserId);
                 
-                if (checkId != null || user !=null)
+                if (checkId != null && user !=null)
                 {
                     var CheckPostId = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.User.Id == post.UserId);
                     if (CheckPostId != null)
@@ -53,7 +53,7 @@ namespace Infrastructure.Persistence.Services
                         var newPost = _mapper.Map<Poster>(post);
                         newPost.User = user;
                         newPost.QuantityPost = checkId.Quantity;
-                        _unitOfWork.Repository<Poster>().AddAsync(newPost);
+                         _unitOfWork.Repository<Poster>().AddAsync(newPost);
                         _unitOfWork.Save();
                     }
                     return new ResponseDTO { IsSuccess = true, Message = "Poster added successfully", Data = post };

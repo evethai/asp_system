@@ -1,4 +1,5 @@
-﻿using API.Service;
+﻿using API.Helper;
+using API.Service;
 using Application.Interfaces;
 using Application.Interfaces.Services;
 using Domain.Entities;
@@ -13,6 +14,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = (AppRole.Admin_Customer))]
     [ApiController]
     
     public class ArtworkController : ControllerBase

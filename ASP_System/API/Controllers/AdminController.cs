@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
-    //[Authorize(Roles = AppRole.Admin)]
+    [Authorize(Roles = AppRole.Admin)]
     [Route("api/admin/")]
     public class AdminController : ControllerBase
     {
@@ -100,10 +100,11 @@ namespace API.Controllers
             if (role != null)
             {
                 var result = await _roleManager.DeleteAsync(role);
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
-                return Ok(new { ProcessStatus.Success });
-                } else
+                    return Ok(new { ProcessStatus.Success });
+                }
+                else
                 {
                     return Ok(new { ProcessStatus.Fail });
                 }
@@ -118,23 +119,24 @@ namespace API.Controllers
         [HttpGet("getUserRole")]
         public async Task<IActionResult> GetListUsers(DefaultSearch defaultSearch)
         {
-            var users =  _context.Users.Select(_ => new UserRoles
+            var users = await  _context.Users.Select(_ => new UserRoles
             {
                 Id = _.Id,
                 UserName = _.UserName,
                 Birthday = _.Birthday,
                 Email = _.Email,
                 IsActive = _.IsActive,
-            });
-            foreach (var user in users.ToList())
+                FirstName = _.FirstName,
+                LastName = _.LastName,
+            }).Sort(string.IsNullOrEmpty(defaultSearch.sortBy) ? "UserName" : defaultSearch.sortBy
+                      , defaultSearch.isAscending)
+                      .ToPageList(defaultSearch.currentPage, defaultSearch.perPage).AsNoTracking().ToListAsync();
+            foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 user.RolesName = roles.ToList<string>();
             }
-            var paging = users.Sort(string.IsNullOrEmpty(defaultSearch.sortBy) ? "UserName" : defaultSearch.sortBy
-                        , defaultSearch.isAscending)
-                        .ToPageList(defaultSearch.currentPage, defaultSearch.perPage).AsNoTracking();
-            var result = await paging.Select(_ => _mapper.Map<UserRoles, UserRolesVM>(_)).ToListAsync();
+            var result =  users.Select(_ => _mapper.Map<UserRoles, UserRolesVM>(_));
             return Ok(new { total = users.Count(), users = result, Page = defaultSearch.currentPage });
         }
         [HttpGet("getUserRole/{userId}")]
@@ -143,9 +145,9 @@ namespace API.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-            var userRoles = (await _userManager.GetRolesAsync(user)).ToArray<string>();
-            return Ok(new { userRoles });
-            } 
+                var userRoles = (await _userManager.GetRolesAsync(user)).ToArray<string>();
+                return Ok(new { userRoles });
+            }
             return Ok(new { ProcessStatus.NotFound });
         }
 
@@ -161,11 +163,11 @@ namespace API.Controllers
 
                 var addRoles = roleNames.Where(r => !userRoles.Contains(r));
                 var result = await _userManager.RemoveFromRolesAsync(user, deleteRoles);
-                if(!result.Succeeded)
+                if (!result.Succeeded)
                 {
                     return Ok(ProcessStatus.Fail);
                 }
-                 result = await _userManager.AddToRolesAsync(user, addRoles);
+                result = await _userManager.AddToRolesAsync(user, addRoles);
                 if (result.Succeeded)
                 {
                     return Ok(ProcessStatus.Success);

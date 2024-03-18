@@ -1,8 +1,10 @@
 ﻿using API.Helper;
 using API.Service;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Model;
+using Firebase.Auth;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
-    [Authorize(Roles = AppRole.Admin)]
+    //[Authorize(Roles = AppRole.Admin)]
     [Route("api/admin/")]
     public class AdminController : ControllerBase
     {
@@ -18,13 +20,15 @@ namespace API.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
         public AdminController(ILogger<AdminController> logger, ApplicationDbContext context,
-            RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+            RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
             _logger = logger;
             _roleManager = roleManager;
+            _mapper = mapper;
 
         }
         #region RoleManagement
@@ -112,22 +116,26 @@ namespace API.Controllers
         #region UserRoles
 
         [HttpGet("getUserRole")]
-        public async Task<IActionResult> GetListUsers()
+        public async Task<IActionResult> GetListUsers(DefaultSearch defaultSearch)
         {
-            var users =  await _context.Users.Select(_ => new UserRoles
+            var users =  _context.Users.Select(_ => new UserRoles
             {
                 Id = _.Id,
                 UserName = _.UserName,
                 Birthday = _.Birthday,
                 Email = _.Email,
                 IsActive = _.IsActive,
-            }).ToListAsync();
-            foreach (var user in users)
+            });
+            foreach (var user in users.ToList())
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 user.RolesName = roles.ToList<string>();
             }
-            return Ok(new { users });
+            var paging = users.Sort(string.IsNullOrEmpty(defaultSearch.sortBy) ? "UserName" : defaultSearch.sortBy
+                        , defaultSearch.isAscending)
+                        .ToPageList(defaultSearch.currentPage, defaultSearch.perPage).AsNoTracking();
+            var result = await paging.Select(_ => _mapper.Map<UserRoles, UserRolesVM>(_)).ToListAsync();
+            return Ok(new { total = users.Count(), users = result, Page = defaultSearch.currentPage });
         }
         [HttpGet("getUserRole/{userId}")]
         public async Task<IActionResult> GetUserRole(String userId)

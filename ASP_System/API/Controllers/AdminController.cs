@@ -119,6 +119,7 @@ namespace API.Controllers
         [HttpGet("getUserRole")]
         public async Task<IActionResult> GetListUsers(DefaultSearch defaultSearch)
         {
+            var userTotal = await _context.Users.Select(_ => new UserRoles { Id = _.Id }).ToListAsync();
             var users = await  _context.Users.Select(_ => new UserRoles
             {
                 Id = _.Id,
@@ -137,7 +138,7 @@ namespace API.Controllers
                 user.RolesName = roles.ToList<string>();
             }
             var result =  users.Select(_ => _mapper.Map<UserRoles, UserRolesVM>(_));
-            return Ok(new { total = users.Count(), users = result, Page = defaultSearch.currentPage });
+            return Ok(new { total = userTotal.Count(), data = result, page = defaultSearch.currentPage });
         }
         [HttpGet("getUserRole/{userId}")]
         public async Task<IActionResult> GetUserRole(String userId)

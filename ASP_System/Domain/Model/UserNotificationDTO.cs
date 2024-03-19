@@ -40,16 +40,52 @@ namespace Domain.Model
     public class GetUserNotificationDTO
     {
         public int Id { get; set; }
-        public string ? ArtworkTitle { get; set; }
-        public string ? NotificationTitle { get; set; }
-        public string ? NotificationDescription { get; set; }
-        public bool ? isRead { get; set; }
+        public string? ArtworkTitle { get; set; }
+        public string? NotificationTitle { get; set; }
+        public string? NotificationDescription { get; set; }
+        public bool? isRead { get; set; }
         public DateTime dateTime { get; set; }
         public NotiStatus notiStatus { get; set; }
-        public string? nameUser {  get; set; }
-        public string artwordUrl {  get; set; }
-        public int artworkId {  get; set; }
-        public int notificationId {  get; set; }
+        public string? nameUser { get; set; }
+        public string artwordUrl { get; set; }
+        public int artworkId { get; set; }
+        public int notificationId { get; set; }
+    }
+
+    public class UserVM
+    {
+        public String LastName { get; set; }
+        public String FirstName { get; set; }
+    }
+
+    public class ArtWorkVM
+    {
+        public String ArtworkId { get; set; }
+        public string Title { get; set; }
+    }
+
+    public class ArtWorkImageVM
+    {
+        public string Image { get; set; }
+
+    }
+
+    public class NotificationVM
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+        public bool? IsRead { get; set; }
+        public NotiStatus notiStatus { get; set; }
+    }
+    public class GetUserNotificationDTO1
+    {
+        public DateTime Date { get; set; }
+        public UserVM UserVM {  get; set; }
+        public ArtWorkVM ArtWorkVM { get; set; }
+        public ArtWorkImageVM ArtWorkImageVM { get; set; }
+        public NotificationVM NotificationVM { get; set; }
     }
 
 

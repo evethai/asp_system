@@ -1,4 +1,5 @@
-﻿using API.Service;
+﻿using API.Helper;
+using API.Service;
 using Application.Interfaces.Services;
 using Domain.Entities;
 using Domain.Model;
@@ -34,9 +35,9 @@ namespace API.Controllers
             }
         }
         [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<GetUserNotificationDTO>>> GetNotificationByUserId(string userId)
+        public async Task<ActionResult<IEnumerable<GetUserNotificationDTO>>> GetNotificationByUserId(string userId, DefaultSearch defaultSearch)
         {
-            var notifications = await _userNotificationService.GetNotificationByUserId(userId);
+            var notifications = (await _userNotificationService.GetNotificationByUserId(userId));
 
             if (notifications == null)
             {

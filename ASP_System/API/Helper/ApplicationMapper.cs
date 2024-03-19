@@ -34,6 +34,9 @@ namespace API.Helper
             CreateMap<Comment, CommentDTO>().ReverseMap();
 		    CreateMap<Comment, CommentAddDTO>().ReverseMap();
 			CreateMap<Comment, CommentUpdateDTO>().ReverseMap();
-		}
+
+            CreateMap<ApplicationUser, UserRoles>().ReverseMap();
+            CreateMap<UserRoles, UserRolesVM>().ReverseMap();
+        }
     }
 }

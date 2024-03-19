@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,6 +13,20 @@ namespace Domain.Model
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateTime Birthday { get; set; }
+    }
+
+    public class UserRolesVM : UserDTO
+    {
+        public String UserName { get; set; }
+        public String Id { get; set; }
+        public String Email { get; set; }
+        public Boolean IsActive { get; set; }
+        public List<string> RolesName { get; set; }
+    }
+
+    public class UserRoles : ApplicationUser
+    {
+        public List<string> RolesName { get; set; }
     }
     public class ProfileUserDTO
     {

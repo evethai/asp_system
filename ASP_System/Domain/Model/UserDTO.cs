@@ -15,6 +15,15 @@ namespace Domain.Model
         public DateTime Birthday { get; set; }
     }
 
+    public class UserRolesVM : UserDTO
+    {
+        public String UserName { get; set; }
+        public String Id { get; set; }
+        public String Email { get; set; }
+        public Boolean IsActive { get; set; }
+        public List<string> RolesName { get; set; }
+    }
+
     public class UserRoles : ApplicationUser
     {
         public List<string> RolesName { get; set; }

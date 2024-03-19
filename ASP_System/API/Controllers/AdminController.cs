@@ -1,8 +1,10 @@
 ﻿using API.Helper;
 using API.Service;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Model;
+using Firebase.Auth;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
-    [Authorize(Roles = AppRole.Admin)]
+    //[Authorize(Roles = AppRole.Admin)]
     [Route("api/admin/")]
     public class AdminController : ControllerBase
     {
@@ -18,13 +20,15 @@ namespace API.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
         public AdminController(ILogger<AdminController> logger, ApplicationDbContext context,
-            RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+            RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
             _logger = logger;
             _roleManager = roleManager;
+            _mapper = mapper;
 
         }
         #region RoleManagement
@@ -96,10 +100,11 @@ namespace API.Controllers
             if (role != null)
             {
                 var result = await _roleManager.DeleteAsync(role);
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
-                return Ok(new { ProcessStatus.Success });
-                } else
+                    return Ok(new { ProcessStatus.Success });
+                }
+                else
                 {
                     return Ok(new { ProcessStatus.Fail });
                 }
@@ -112,22 +117,28 @@ namespace API.Controllers
         #region UserRoles
 
         [HttpGet("getUserRole")]
-        public async Task<IActionResult> GetListUsers()
+        public async Task<IActionResult> GetListUsers(DefaultSearch defaultSearch)
         {
-            var users =  await _context.Users.Select(_ => new UserRoles
+            var userTotal = await _context.Users.Select(_ => new UserRoles { Id = _.Id }).ToListAsync();
+            var users = await  _context.Users.Select(_ => new UserRoles
             {
                 Id = _.Id,
                 UserName = _.UserName,
                 Birthday = _.Birthday,
                 Email = _.Email,
                 IsActive = _.IsActive,
-            }).ToListAsync();
+                FirstName = _.FirstName,
+                LastName = _.LastName,
+            }).Sort(string.IsNullOrEmpty(defaultSearch.sortBy) ? "UserName" : defaultSearch.sortBy
+                      , defaultSearch.isAscending)
+                      .ToPageList(defaultSearch.currentPage, defaultSearch.perPage).AsNoTracking().ToListAsync();
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 user.RolesName = roles.ToList<string>();
             }
-            return Ok(new { users });
+            var result =  users.Select(_ => _mapper.Map<UserRoles, UserRolesVM>(_));
+            return Ok(new { total = userTotal.Count(), data = result, page = defaultSearch.currentPage });
         }
         [HttpGet("getUserRole/{userId}")]
         public async Task<IActionResult> GetUserRole(String userId)
@@ -135,9 +146,9 @@ namespace API.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-            var userRoles = (await _userManager.GetRolesAsync(user)).ToArray<string>();
-            return Ok(new { userRoles });
-            } 
+                var userRoles = (await _userManager.GetRolesAsync(user)).ToArray<string>();
+                return Ok(new { userRoles });
+            }
             return Ok(new { ProcessStatus.NotFound });
         }
 
@@ -153,11 +164,11 @@ namespace API.Controllers
 
                 var addRoles = roleNames.Where(r => !userRoles.Contains(r));
                 var result = await _userManager.RemoveFromRolesAsync(user, deleteRoles);
-                if(!result.Succeeded)
+                if (!result.Succeeded)
                 {
                     return Ok(ProcessStatus.Fail);
                 }
-                 result = await _userManager.AddToRolesAsync(user, addRoles);
+                result = await _userManager.AddToRolesAsync(user, addRoles);
                 if (result.Succeeded)
                 {
                     return Ok(ProcessStatus.Success);

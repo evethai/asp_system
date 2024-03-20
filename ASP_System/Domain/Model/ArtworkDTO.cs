@@ -30,17 +30,16 @@ namespace Domain.Model
 
     public class ArtworkUpdateDTO
     {
-        [Key]
         [Required(ErrorMessage = "Id is required")]
         public int ArtworkId { get; set; }
 
-        [Required(ErrorMessage = "Title is required")]
-        public string Title { get; set; }
-        public string Description { get; set; }
-        [Required(ErrorMessage = "Price is required")]
-        public double? Price { get; set; }
+        //[Required(ErrorMessage = "Title is required")]
+        //public string Title { get; set; }
+        //public string Description { get; set; }
+        //[Required(ErrorMessage = "Price is required")]
+        //public double? Price { get; set; }
         public ArtWorkStatus Status { get; set; }
-        public int? ReOrderQuantity { get; set; }
+        //public int? ReOrderQuantity { get; set; }
     }
     public class ArtworkAddDTO
     {

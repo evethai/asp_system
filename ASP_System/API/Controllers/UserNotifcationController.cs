@@ -1,4 +1,5 @@
-﻿using API.Service;
+﻿using API.Helper;
+using API.Service;
 using Application.Interfaces.Services;
 using Domain.Entities;
 using Domain.Model;
@@ -33,17 +34,17 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<GetUserNotificationDTO>>> GetNotificationByUserId(string userId)
+        [HttpGet("getNotiUser")]
+        public async Task<IActionResult> GetNotificationByUserId(string userId,[FromQuery] DefaultSearch defaultSearch)
         {
-            var notifications = await _userNotificationService.GetNotificationByUserId(userId);
-
+            var notifications = await _userNotificationService.GetNotiSortResultAsync(userId, defaultSearch);
+            var total = _userNotificationService.totalGetNotiUserSortResult(userId);
             if (notifications == null)
             {
                 return NotFound(); // or handle as needed
             }
 
-            return Ok(notifications);
+            return Ok(new { total, data = notifications, page = defaultSearch.currentPage });
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveUserNotification(int id)

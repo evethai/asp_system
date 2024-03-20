@@ -44,7 +44,11 @@ namespace API.Controllers
         public async Task<IActionResult> GetPostByUserId(string UserId)
         {
             var result = await _posterService.GetPosterByUserId(UserId);
-            return Ok(result);
+            if(result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound();
         }
         [HttpPut("DecreasePost")]
         public async Task<IActionResult> DecreasePost(string userId) // Khi artist post bài 

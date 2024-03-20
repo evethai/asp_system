@@ -15,6 +15,7 @@ namespace Domain.Enums
         NotPermission = 5,
         RelateEntity = 6,
         NotEnough = 7,
+        NotFound = 8,
     }
 
 }

@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-	[ApiController]
-	public class UserNotifcationController : ControllerBase
+    [ApiController]
+    public class UserNotifcationController : ControllerBase
     {
         private readonly IUserNotificationService _userNotificationService;
         private readonly ICurrentUserService _currentUserService;
@@ -36,7 +36,7 @@ namespace API.Controllers
         }
 
         [HttpGet("getNotiUser")]
-        public async Task<IActionResult> GetNotificationByUserId(string userId, DefaultSearch defaultSearch)
+        public async Task<IActionResult> GetNotificationByUserId(string userId,[FromQuery] DefaultSearch defaultSearch)
         {
             var notifications = await _userNotificationService.GetNotiSortResultAsync(userId, defaultSearch);
             var total = _userNotificationService.totalGetNotiUserSortResult(userId);

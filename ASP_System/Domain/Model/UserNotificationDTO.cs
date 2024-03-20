@@ -28,7 +28,7 @@ namespace Domain.Model
         [Required(ErrorMessage = "Title is required")]
         public int? NotificationId { get; set; }
         [Required(ErrorMessage = "Title is required")]
-        public int? ArtworkId { get; set; }
+        public int? ArtworkId { get; set; } 
     }
     public class CreateAdminNotificationDTO
     {
@@ -90,4 +90,6 @@ namespace Domain.Model
         public ArtWorkImageVM ArtWorkImageVM { get; set; }
         public NotificationVM NotificationVM { get; set; }
     }
+
+
 }

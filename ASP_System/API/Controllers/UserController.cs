@@ -154,79 +154,89 @@ namespace API.Controllers
         public async Task<ActionResult> GoogleLogin(UserSignUpDTO model)
         {
             var user = await _userServices.ExternalLoginAsync(model);
-            if (user != null) { 
-                return Ok(user);
-            }
-            ////new
-            //var responseGoogle = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            //if (responseGoogle == null) {
-            //    return Unauthorized();
-            //}
-            //if (responseGoogle.Principal == null) return BadRequest();
+			if (user == null)
+			{
+				return Unauthorized();
 
-            //var name = responseGoogle.Principal.FindFirstValue(ClaimTypes.Name);
-            //var givenName = responseGoogle.Principal.FindFirstValue(ClaimTypes.GivenName);
-            //var email = responseGoogle.Principal.FindFirstValue(ClaimTypes.Email);
-            ////Do something with the claims
-            //// var user = await UserService.FindOrCreate(new { name, givenName, email});
+			}
+			var userRoles = await _userManager.GetRolesAsync(user);
+			var accessToken = _jwtTokenService.CreateToken(user, userRoles);
+			var refreshToken = _jwtTokenService.CreateRefeshToken();
+			user.RefreshToken = refreshToken;
+			user.DateExpireRefreshToken = DateTime.Now.AddDays(7);
+			_context.Users.Update(user);
+			await _context.SaveChangesAsync();
+			return Ok(new { token = accessToken, refreshToken });
+			////new
+			//var responseGoogle = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			//if (responseGoogle == null) {
+			//    return Unauthorized();
+			//}
+			//if (responseGoogle.Principal == null) return BadRequest();
 
-            //return Ok();
+			//var name = responseGoogle.Principal.FindFirstValue(ClaimTypes.Name);
+			//var givenName = responseGoogle.Principal.FindFirstValue(ClaimTypes.GivenName);
+			//var email = responseGoogle.Principal.FindFirstValue(ClaimTypes.Email);
+			////Do something with the claims
+			//// var user = await UserService.FindOrCreate(new { name, givenName, email});
+
+			//return Ok();
 
 
-            //old
-            //var info = await _signInManager.GetExternalLoginInfoAsync();
-            //if (info == null)
-            //{
-            //    return Unauthorized();
-            //} 
-            //var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+			//old
+			//var info = await _signInManager.GetExternalLoginInfoAsync();
+			//if (info == null)
+			//{
+			//    return Unauthorized();
+			//} 
+			//var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
 
-            //if (signInResult.Succeeded)
-            //{
-            //    return Ok();
-            //}
-            //else
-            //{
-            //    var responseGoogle = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            //    if (responseGoogle.Principal == null) return BadRequest();
+			//if (signInResult.Succeeded)
+			//{
+			//    return Ok();
+			//}
+			//else
+			//{
+			//    var responseGoogle = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			//    if (responseGoogle.Principal == null) return BadRequest();
 
-            //    var name = responseGoogle.Principal.FindFirstValue(ClaimTypes.Name);
-            //    var givenName = responseGoogle.Principal.FindFirstValue(ClaimTypes.GivenName);
-            //    var email = responseGoogle.Principal.FindFirstValue(ClaimTypes.Email);
-            //    //Do something with the claims
-            //    // var user = await UserService.FindOrCreate(new { name, givenName, email});
-            //    var user = new User { Email = email, FirstName = name };
+			//    var name = responseGoogle.Principal.FindFirstValue(ClaimTypes.Name);
+			//    var givenName = responseGoogle.Principal.FindFirstValue(ClaimTypes.GivenName);
+			//    var email = responseGoogle.Principal.FindFirstValue(ClaimTypes.Email);
+			//    //Do something with the claims
+			//    // var user = await UserService.FindOrCreate(new { name, givenName, email});
+			//    var user = new User { Email = email, FirstName = name };
 
-            //    var userLogin = await _userManager.FindByEmailAsync(email);
-            //    IdentityResult result;
-            //    if (user != null)
-            //    {
-            //        result = await _userManager.AddLoginAsync(userLogin, info);
-            //        if (result.Succeeded)
-            //        {
-            //            await _signInManager.SignInAsync(userLogin, isPersistent: false);
-            //            return Ok();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        ApplicationUser newUser = new ApplicationUser {
-            //            Email = email,
-            //            UserName = email,
-            //            FirstName = name
-            //        };
-            //        result = await _userManager.CreateAsync(newUser);
-            //        if (result.Succeeded)
-            //        {
-            //            result = await _userManager.AddLoginAsync(newUser, info);
-            //            if (result.Succeeded)
-            //            {
-            //                //TODO: Send an emal for the email confirmation and add a default role as in the Register action
-            //                await _signInManager.SignInAsync(newUser, isPersistent: false);
-            //                return Ok();                        }
-            //        }
-            //    }
-            return Unauthorized();
+			//    var userLogin = await _userManager.FindByEmailAsync(email);
+			//    IdentityResult result;
+			//    if (user != null)
+			//    {
+			//        result = await _userManager.AddLoginAsync(userLogin, info);
+			//        if (result.Succeeded)
+			//        {
+			//            await _signInManager.SignInAsync(userLogin, isPersistent: false);
+			//            return Ok();
+			//        }
+			//    }
+			//    else
+			//    {
+			//        ApplicationUser newUser = new ApplicationUser {
+			//            Email = email,
+			//            UserName = email,
+			//            FirstName = name
+			//        };
+			//        result = await _userManager.CreateAsync(newUser);
+			//        if (result.Succeeded)
+			//        {
+			//            result = await _userManager.AddLoginAsync(newUser, info);
+			//            if (result.Succeeded)
+			//            {
+			//                //TODO: Send an emal for the email confirmation and add a default role as in the Register action
+			//                await _signInManager.SignInAsync(newUser, isPersistent: false);
+			//                return Ok();                        }
+			//        }
+			//    }
+			return Unauthorized();
             }
     }
 }

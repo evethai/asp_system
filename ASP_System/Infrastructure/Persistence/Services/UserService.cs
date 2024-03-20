@@ -155,7 +155,28 @@ namespace Infrastructure.Persistence.Services
                     // Add additional properties as needed
                 };
 
-                var user = _userManager.CreateAsync(newUser);
+                var user = await _userManager.CreateAsync(newUser, model.Email);
+                if (user.Succeeded)
+                {
+                    if (!await _roleManager.RoleExistsAsync(AppRole.Customer))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(AppRole.Customer));
+                    }
+
+                    if (!await _roleManager.RoleExistsAsync(AppRole.Admin))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(AppRole.Admin));
+                    }
+                    if (model.IsAdmin)
+                    {
+                        await _userManager.AddToRoleAsync(newUser, AppRole.Admin);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(newUser, AppRole.Customer);
+                    }
+                }
+                
                 // Optionally, you may want to add roles or claims to the new user
                 // await UserManager.AddToRoleAsync(newUser, "RoleName");
 

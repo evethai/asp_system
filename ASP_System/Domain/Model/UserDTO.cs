@@ -28,6 +28,7 @@ namespace Domain.Model
     {
         public List<string> RolesName { get; set; }
     }
+
     public class ProfileUserDTO
     {
         public string FirstName { get; set; } = string.Empty;
@@ -45,4 +46,5 @@ namespace Domain.Model
         public int LikeNumber { get; set; }
         public int CommentNumber { get; set; }
     }
+
 }

@@ -8,7 +8,9 @@ using Domain.Model;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -123,6 +125,11 @@ namespace Infrastructure.Persistence.Services
 
         public async Task<IdentityResult> SignUpAsync(UserSignUpDTO model)
         {
+            var isDupplicate = await _userManager.FindByEmailAsync(model.Email);
+            if (isDupplicate != null)
+            {
+                return null;
+            }
             var user = new ApplicationUser
             {
                 FirstName = model.FirstName,
@@ -155,6 +162,52 @@ namespace Infrastructure.Persistence.Services
                 //await _userManager.AddToRoleAsync(user, AppRole.Customer);
             }
             return result;
+        }
+
+        public async Task<ApplicationUser> ExternalLoginAsync(UserSignUpDTO model)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser == null)
+            {
+                // User doesn't exist, create a new user
+                var newUser = new ApplicationUser
+                {
+                    UserName = model.Email, // You can set the username to the user's email address
+                    Email = model.Email,
+                    FirstName = model.FirstName
+                    // Add additional properties as needed
+                };
+
+                var user = await _userManager.CreateAsync(newUser, model.Email);
+                if (user.Succeeded)
+                {
+                    if (!await _roleManager.RoleExistsAsync(AppRole.Customer))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(AppRole.Customer));
+                    }
+
+                    if (!await _roleManager.RoleExistsAsync(AppRole.Admin))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(AppRole.Admin));
+                    }
+                    if (model.IsAdmin)
+                    {
+                        await _userManager.AddToRoleAsync(newUser, AppRole.Admin);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(newUser, AppRole.Customer);
+                    }
+                }
+                
+                // Optionally, you may want to add roles or claims to the new user
+                // await UserManager.AddToRoleAsync(newUser, "RoleName");
+
+                // Sign in the newly created user
+                var result = await _userManager.FindByEmailAsync(model.Email);
+                return result;
+            }
+            return existingUser;
         }
 
     }

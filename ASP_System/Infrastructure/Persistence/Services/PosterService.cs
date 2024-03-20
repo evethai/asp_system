@@ -116,5 +116,26 @@ namespace Infrastructure.Persistence.Services
                 return null;
             }          
         }
-    }
+
+		public Task<ResponseDTO> IncreasePost(string userId)
+		{
+			try
+			{
+				var CheckQuantityPost = _unitOfWork.Repository<Poster>().GetQueryable().FirstOrDefault(p => p.User.Id == userId);
+				if (CheckQuantityPost != null)
+				{
+					var update = _mapper.Map<Poster>(CheckQuantityPost);
+					update.QuantityPost = update.QuantityPost + 1;
+					_unitOfWork.Repository<Poster>().UpdateAsync(update);
+					_unitOfWork.Save();
+					return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Poster updated successfully", Data = CheckQuantityPost });
+				}
+				return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = "Package not found" });
+			}
+			catch (Exception ex)
+			{
+				return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
+			}
+		}
+	}
 }

@@ -112,7 +112,7 @@ namespace Infrastructure.Persistence.Services
                 artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image,
                 artworkId = notification.ArtworkId.Value,
                 notificationId = notification.NotificationId.Value
-            }).ToList();
+            });
             return userNotificationDTOs;
         }
 
@@ -170,6 +170,7 @@ namespace Infrastructure.Persistence.Services
             .GetQueryable()
             .Where(noti => noti.User.Id == userid)
             .Include(x => x.User)
+            .Include(x=>x.Artwork).ThenInclude(x => x.User)
             .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
             .Include(x => x.Notification);
 

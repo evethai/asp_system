@@ -21,19 +21,20 @@ namespace API.Controllers
             _userNotificationService = notiService;
             _currentUserService = currentUserService;
         }
+
         [HttpPost("CreateNotification")]
         public async Task<IActionResult> CreateUserNotification( CreateUserNotificationDTO noti)
         {
             try
             {
-                var result = await _userNotificationService.CreateUserNotification(noti);
-                return Ok(result);
-            }
-            catch (Exception ex)
+				var result = await _userNotificationService.CreateUserNotification(noti);
+				return Ok(result);
+			}catch(Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
         [HttpGet("getNotiUser")]
         public async Task<IActionResult> GetNotificationByUserId(string userId,[FromQuery] DefaultSearch defaultSearch)
         {

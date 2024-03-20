@@ -112,7 +112,7 @@ namespace Infrastructure.Persistence.Services
                 artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image,
                 artworkId = notification.ArtworkId.Value,
                 notificationId = notification.NotificationId.Value
-            }).ToList();
+            });
             return userNotificationDTOs;
         }
 

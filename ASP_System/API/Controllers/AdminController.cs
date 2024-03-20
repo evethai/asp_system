@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
-    //[Authorize(Roles = AppRole.Admin)]
+    [Authorize(Roles = AppRole.Admin)]
     [Route("api/admin/")]
     [ApiController]
     public class AdminController : ControllerBase

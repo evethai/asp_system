@@ -17,5 +17,7 @@ namespace Application.Interfaces.Services
         //public Task LogOutAsync();
         public Task<ProfileUserDTO> GetUserByIDlAsync(string id);
         public Task<IEnumerable<UserDTO>> GetAllUsers();
+
+        public Task<ApplicationUser> ExternalLoginAsync(UserSignUpDTO model);
     }
 }

@@ -83,12 +83,14 @@ namespace Infrastructure.Persistence.Services
             {
                 var likeNumber = _unitOfWork.Repository<Like>().GetQueryable().Where(p => p.Artwork.ArtworkId == artwork.ArtworkId).Count();
                 var commentNumber = _unitOfWork.Repository<Comment>().GetQueryable().Where(p => p.Artwork.ArtworkId == artwork.ArtworkId).Count();
+                var image = _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(p => p.ArtworkId == artwork.ArtworkId).Select(p => p.Image).FirstOrDefault();
                 var artwork_Profile = new Artwork_Profile
                 {
                     ArtworkId = artwork.ArtworkId,
                     Title = artwork.Title,
                     Description = artwork.Description,
                     Price = artwork.Price,
+                    Image = image,
                     LikeNumber = likeNumber,
                     CommentNumber = commentNumber
                 };

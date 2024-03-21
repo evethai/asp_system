@@ -8,8 +8,9 @@ namespace Domain.Enums
 {
     public enum ArtWorkStatus
     {
-            PendingConfirmation = 1,
-            InProgress = 2,
-            Sold = 3
-    }
+		PendingConfirmation = 1,
+		InProgress = 2,
+		Sold = 3,
+		SoldPPendingConfirm = 4
+	}
 }

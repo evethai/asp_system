@@ -15,7 +15,7 @@ namespace Domain.Entities
         public int Id { get; set; }
         public int? NotificationId { get; set; }
         public int? ArtworkId { get; set; }
-        //public int? UserId { get; set; }
+        public string? UserIdFor { get; set; }
 
         public virtual Notification Notification { get; set; }
         public virtual Artwork Artwork { get; set; }

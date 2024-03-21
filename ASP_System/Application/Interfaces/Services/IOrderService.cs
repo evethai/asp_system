@@ -14,5 +14,7 @@ namespace Application.Interfaces.Services
         Task<ResponseDTO> CreateOrder(OrderCreateDTO order, string userId);
         Task<ResponseDTO> DeleteOrder(OrderDeleteDTO order);
         Task<IEnumerable<OrderDTO>> GetAllOrder();
-    }
+		Task<IEnumerable<OrderDTO>> GetOrderByUser(string userId);
+
+	}
 }

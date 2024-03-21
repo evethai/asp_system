@@ -85,6 +85,11 @@ namespace Domain.Model
         public bool? IsRead { get; set; }
         public NotiStatus notiStatus { get; set; }
     }
+
+    public class OrdersVM
+    {
+        public string UserId { get; set; }
+    }
     public class GetUserNotificationDTO1
     {
         public DateTime Date { get; set; }
@@ -92,6 +97,7 @@ namespace Domain.Model
         public ArtWorkVM ArtWorkVM { get; set; }
         public ArtWorkImageVM ArtWorkImageVM { get; set; }
         public NotificationVM NotificationVM { get; set; }
+        public OrdersVM OrdersVM { get; set; }
     }
 
 

@@ -95,7 +95,7 @@ namespace Infrastructure.Persistence.Services
             var userNotifications = await _unitOfWork.Repository<UserNofitication>()
             .GetQueryable()
             .Where(noti => noti.User.Id == userId)
-            .Include(x=> x.User)
+            .Include(x=> x.User).ThenInclude(x=>x.Orders)
             .Include(x => x.Artwork).ThenInclude(x=>x.ArtworkImages)
             .Include(x => x.Notification)
             .ToListAsync();
@@ -169,7 +169,7 @@ namespace Infrastructure.Persistence.Services
             var userNotifications = _unitOfWork.Repository<UserNofitication>()
             .GetQueryable()
             .Where(noti => noti.User.Id == userid)
-            .Include(x => x.User)
+            .Include(x => x.User).Include(x => x.User.Orders).Where(x=>x.ArtworkId == x.)
             .Include(x=>x.Artwork).ThenInclude(x => x.User)
             .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
             .Include(x => x.Notification);
@@ -182,6 +182,7 @@ namespace Infrastructure.Persistence.Services
                 UserVM = _mapper.Map<ApplicationUser, UserVM>(_.User),
                 ArtWorkImageVM = _mapper.Map<ArtworkImage, ArtWorkImageVM>(_.Artwork.ArtworkImages.FirstOrDefault()),
                 NotificationVM = _mapper.Map<Notification, NotificationVM>(_.Notification),
+                OrdersVM = _mapper.Map<Order, OrdersVM>(_.User.Orders.FirstOrDefault()),
             }).Sort(string.IsNullOrEmpty(defaultSearch.sortBy) ? "Date" : defaultSearch.sortBy
                       , defaultSearch.isAscending)
                       .ToPageList(defaultSearch.currentPage, defaultSearch.perPage).AsNoTracking().ToListAsync();

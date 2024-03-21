@@ -38,7 +38,7 @@ namespace API.Controllers
 
         //[Authorize]
         [HttpDelete("DeleteLike")]
-        public async Task<IActionResult> DeleteLike(int LikeId)
+        public async Task<IActionResult> DeleteLike(LikeCreateDTO LikeId)
         {
             var reponse = await _likeService.DeleteLike(LikeId);
             if (reponse.IsSuccess)

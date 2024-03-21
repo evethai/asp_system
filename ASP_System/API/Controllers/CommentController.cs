@@ -38,7 +38,7 @@ namespace API.Controllers
 			}
 		}
 		[HttpDelete("DeleteCommment")]
-		public async Task<IActionResult> DeleteComent(int CommentId)
+		public async Task<IActionResult> DeleteComent(CommentAddDTO CommentId)
 		{
 			try
 			{

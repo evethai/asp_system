@@ -43,8 +43,8 @@ namespace Domain.Model
         public string Title { get; set; }
         public string Description { get; set; }
         public double? Price { get; set; }
-        public int LikeNumber { get; set; }
-        public int CommentNumber { get; set; }
+        public List<LikeDTO> LikeNumber { get; set; }
+        public List<CommentDTO> CommentNumber { get; set; }
         public string Image { get; set; }  
     }
 

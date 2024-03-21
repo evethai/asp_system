@@ -35,7 +35,7 @@ namespace Domain.Model
         public string LastName { get; set; } = string.Empty;
         public DateTime Birthday { get; set; }
         public string Email { get; set; } = string.Empty;
-        public List<Artwork_Profile> Artworks { get; set; }
+        public List<Artwork_Profile> Artworks { get; set; }       
     }
     public class Artwork_Profile
     {
@@ -45,6 +45,7 @@ namespace Domain.Model
         public double? Price { get; set; }
         public int LikeNumber { get; set; }
         public int CommentNumber { get; set; }
+        public string Image { get; set; }  
     }
 
 }

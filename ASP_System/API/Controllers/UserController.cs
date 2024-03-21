@@ -87,7 +87,7 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpGet("SignOut")]
+        [HttpDelete("SignOut")]
         public async Task<IActionResult> SignOut()
         {
             var user = await _currentUserSerivice.User();

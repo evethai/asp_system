@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -81,8 +82,8 @@ namespace Infrastructure.Persistence.Services
             List<Artwork_Profile> artwork_Profiles = new List<Artwork_Profile>();
             foreach (var artwork in ArtworkDTOList)
             {
-                var likeNumber = _unitOfWork.Repository<Like>().GetQueryable().Where(p => p.Artwork.ArtworkId == artwork.ArtworkId).Count();
-                var commentNumber = _unitOfWork.Repository<Comment>().GetQueryable().Where(p => p.Artwork.ArtworkId == artwork.ArtworkId).Count();
+                var likeNumber = _unitOfWork.Repository<Like>().GetQueryable().Where(p => p.Artwork.ArtworkId == artwork.ArtworkId).Include(_ => _.Artwork).Include(_ => _.User).ToList();
+                var commentNumber = _unitOfWork.Repository<Comment>().GetQueryable().Where(p => p.Artwork.ArtworkId == artwork.ArtworkId).Include(_ => _.Artwork).Include(_ => _.User).ToList();
                 var image = _unitOfWork.Repository<ArtworkImage>().GetQueryable().Where(p => p.ArtworkId == artwork.ArtworkId).Select(p => p.Image).FirstOrDefault();
                 var artwork_Profile = new Artwork_Profile
                 {
@@ -91,9 +92,9 @@ namespace Infrastructure.Persistence.Services
                     Description = artwork.Description,
                     Price = artwork.Price,
                     Image = image,
-                    LikeNumber = likeNumber,
-                    CommentNumber = commentNumber
-                };
+                    LikeNumber = _mapper.Map<List<LikeDTO>>(likeNumber),
+                    CommentNumber = _mapper.Map<List<CommentDTO>>(commentNumber)
+				};
                 artwork_Profiles.Add(artwork_Profile);
             }
 

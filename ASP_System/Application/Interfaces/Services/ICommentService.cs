@@ -11,7 +11,7 @@ namespace Application.Interfaces.Services
 	{
 		Task<IEnumerable<CommentDTO>> GetAllCommentByArtwork(int ArtworkId);
 		Task<ResponseDTO> CreateComment(CommentAddDTO cmt);
-		Task<ResponseDTO> DeleteComent(int CommentId);
+		Task<ResponseDTO> DeleteComent(CommentAddDTO cmt);
 		Task<ResponseDTO> UpdateComment(CommentUpdateDTO cmt);
 	}
 }

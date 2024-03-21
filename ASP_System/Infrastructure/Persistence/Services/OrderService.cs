@@ -123,5 +123,12 @@ namespace Infrastructure.Persistence.Services
             }
             return OrderDTOList;
         }
-    }
+
+		public async Task<IEnumerable<OrderDTO>> GetOrderByUser(string userId)
+		{
+            var OrderList = _unitOfWork.Repository<Order>().GetQueryable().Where(u => u.User.Id.Equals(userId)).ToList();
+			var OrderDTOList = _mapper.Map<List<OrderDTO>>(OrderList);
+			return OrderDTOList;
+		}
+	}
 }

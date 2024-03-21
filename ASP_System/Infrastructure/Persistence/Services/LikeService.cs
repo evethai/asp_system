@@ -105,7 +105,7 @@ namespace Infrastructure.Persistence.Services
             }
         }
 
-        public async Task<ResponseDTO> DeleteLike(int LikeId)
+        public async Task<ResponseDTO> DeleteLike(LikeCreateDTO LikeId)
         {
             //try
             //{
@@ -123,7 +123,7 @@ namespace Infrastructure.Persistence.Services
             //{
             //    return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
             //}
-            var CheckId = await _unitOfWork.Repository<Like>().GetByIdAsync(LikeId);
+            var CheckId = _unitOfWork.Repository<Like>().GetQueryable().Where(p=>p.User.Id == LikeId.UserId && p.Artwork.ArtworkId == LikeId.ArtworkId).FirstOrDefault();
             if (CheckId != null)
             {
                 await _unitOfWork.Repository<Like>().DeleteAsync(CheckId);

@@ -29,10 +29,17 @@ namespace API.Helper
             CreateMap<Order, OrderCreateDTO>().ReverseMap();
             CreateMap<Order, OrderUpdateDTO>().ReverseMap();
             CreateMap<Order, OrderDeleteDTO>().ReverseMap();
-            CreateMap<Like, LikeDTO>().ReverseMap();
-            CreateMap<Like, LikeCreateDTO>().ReverseMap();
-            CreateMap<Comment, CommentDTO>().ReverseMap();
-            CreateMap<Comment, CommentAddDTO>().ReverseMap();
+            CreateMap<Like, LikeDTO>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArtworkId, opt => opt.MapFrom(src => src.Artwork.ArtworkId));
+
+			CreateMap<Like, LikeCreateDTO>().ReverseMap();
+            CreateMap<Comment, CommentDTO>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id))
+				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+				.ForMember(dest => dest.ArtworkId, opt => opt.MapFrom(src => src.Artwork.ArtworkId));
+			CreateMap<Comment, CommentAddDTO>().ReverseMap();
             CreateMap<Comment, CommentUpdateDTO>().ReverseMap();
 
             CreateMap<ApplicationUser, UserRoles>().ReverseMap();

@@ -72,7 +72,7 @@ namespace API.Controllers
         public async Task<IActionResult> SignIn(UserSignInDTO signInModel)
         {
             var user = await _userServices.SignInAsync(signInModel);
-            if (user == null)
+            if (user == null || !(user.IsActive))
             {
                 return Unauthorized();
             }
@@ -87,13 +87,10 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpDelete("SignOut")]
+        [HttpGet("SignOut")]
         public async Task<IActionResult> SignOut()
         {
-            var userName = HttpContext.User.Identity?.Name;
-            if (userName is null)
-                return Unauthorized();
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _currentUserSerivice.User();
             if (user is null)
                 return Unauthorized();
             user.RefreshToken = null;

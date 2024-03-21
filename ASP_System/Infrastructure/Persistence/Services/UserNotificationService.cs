@@ -170,6 +170,7 @@ namespace Infrastructure.Persistence.Services
             .GetQueryable()
             .Where(noti => noti.User.Id == userid)
             .Include(x => x.User)
+            .Include(x=>x.Artwork).ThenInclude(x => x.User)
             .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
             .Include(x => x.Notification);
 

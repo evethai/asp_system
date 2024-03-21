@@ -56,12 +56,18 @@ namespace Domain.Model
     {
         public String LastName { get; set; }
         public String FirstName { get; set; }
+
     }
 
     public class ArtWorkVM
     {
         public String ArtworkId { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
+		public double? Price { get; set; }
+		public DateTime? CreateOn { get; set; }
+		public string UserId { get; set; }
+
     }
 
     public class ArtWorkImageVM

@@ -64,5 +64,19 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-    }
+		[HttpPut("IncreasePost")]
+		public async Task<IActionResult> IncreasePost(string userId) // Khi artist post bài 
+		{
+
+			try
+			{
+				var result = await _posterService.IncreasePost(userId);
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			}
+		}
+	}
 }

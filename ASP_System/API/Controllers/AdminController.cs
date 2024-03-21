@@ -12,8 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
-    //[Authorize(Roles = AppRole.Admin)]
+    [Authorize(Roles = AppRole.Admin)]
     [Route("api/admin/")]
+    [ApiController]
     public class AdminController : ControllerBase
     {
         private readonly ILogger<AdminController> _logger;
@@ -38,13 +39,35 @@ namespace API.Controllers
         public async Task<IActionResult> GetRole()
         {
             var roles = await _roleManager.Roles.OrderBy(_ => _.Name).ToListAsync();
+            List<string> roleName = new List<string>();
             if (roles.Count > 0)
             {
-                return Ok(roles);
+                var result = roles.Select(_ => new
+                {
+                    _.Id,
+                    _.Name
+                });
+                return Ok(result);
             }
-            else
-                return Ok(new { ProcessStatus.RelateEntity });
+            return Ok(new { ProcessStatus.RelateEntity });
         }
+        //[HttpGet("getRoleName")]
+        //public async Task<IActionResult> GetRoleName()
+        //{
+        //    var roles = await _roleManager.Roles.OrderBy(_ => _.Name).ToListAsync();
+        //    List<string> roleName = new List<string>();
+        //    if (roles.Count > 0)
+        //    {
+               
+        //        foreach (var itemRole in roles)
+        //        {
+        //            roleName.Add(itemRole.ToString());
+        //        }
+               
+        //        return Ok(roleName);
+        //    }
+        //    return Ok(new { ProcessStatus.RelateEntity });
+        //}
 
         [HttpGet("getRoleBy/{id}")]
         public async Task<IActionResult> GetRoleById(String id)
@@ -117,10 +140,10 @@ namespace API.Controllers
         #region UserRoles
 
         [HttpGet("getUserRole")]
-        public async Task<IActionResult> GetListUsers(DefaultSearch defaultSearch)
+        public async Task<IActionResult> GetListUsers([FromQuery] DefaultSearch defaultSearch)
         {
             var userTotal = await _context.Users.Select(_ => new UserRoles { Id = _.Id }).ToListAsync();
-            var users = await  _context.Users.Select(_ => new UserRoles
+            var users = await _context.Users.Select(_ => new UserRoles
             {
                 Id = _.Id,
                 UserName = _.UserName,
@@ -137,7 +160,7 @@ namespace API.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
                 user.RolesName = roles.ToList<string>();
             }
-            var result =  users.Select(_ => _mapper.Map<UserRoles, UserRolesVM>(_));
+            var result = users.Select(_ => _mapper.Map<UserRoles, UserRolesVM>(_));
             return Ok(new { total = userTotal.Count(), data = result, page = defaultSearch.currentPage });
         }
         [HttpGet("getUserRole/{userId}")]
@@ -153,7 +176,7 @@ namespace API.Controllers
         }
 
 
-        [HttpPost("addUserRole/{userId}")]
+        [HttpPost("addUserRole")]
         public async Task<IActionResult> AddRoleUser(List<string> roleNames, String userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -161,7 +184,6 @@ namespace API.Controllers
             {
                 var userRoles = (await _userManager.GetRolesAsync(user)).ToArray<string>();
                 var deleteRoles = userRoles.Where(r => !roleNames.Contains(r));
-
                 var addRoles = roleNames.Where(r => !userRoles.Contains(r));
                 var result = await _userManager.RemoveFromRolesAsync(user, deleteRoles);
                 if (!result.Succeeded)
@@ -170,6 +192,23 @@ namespace API.Controllers
                 }
                 result = await _userManager.AddToRolesAsync(user, addRoles);
                 if (result.Succeeded)
+                {
+                    return Ok(ProcessStatus.Success);
+                }
+            }
+            return Ok(new { ProcessStatus.NotFound });
+        }
+
+        [HttpPost("changeUserStatus")]
+        public async Task<IActionResult> EnalbleUser(String userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                user.IsActive = !(user.IsActive);
+                _context.Update(user);
+                int result = _context.SaveChanges();
+                if (result > 0)
                 {
                     return Ok(ProcessStatus.Success);
                 }

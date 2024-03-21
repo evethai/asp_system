@@ -62,7 +62,6 @@ namespace API.Helper
             CreateMap<Artwork, ArtWorkVM>().ReverseMap();
             CreateMap<ArtworkImage, ArtWorkImageVM> ().ReverseMap();
             CreateMap<Notification, NotificationVM> ().ReverseMap();
-            CreateMap<Order, OrdersVM> ().ReverseMap();
 
         }
     }

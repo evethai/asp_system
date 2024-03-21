@@ -46,7 +46,8 @@ namespace Infrastructure.Persistence.Services
                     
                     ArtworkId = noti.ArtworkId,
                     NotificationId = noti.NotificationId,
-                    User = user  // Assuming User property is related to ApplicationUser in UserNotification
+                    User = user,
+                    UserIdFor = noti.UserIdFor// Assuming User property is related to ApplicationUser in UserNotification
                 };
 
                 _unitOfWork.Repository<UserNofitication>().AddAsync(newUserNotification);
@@ -169,7 +170,7 @@ namespace Infrastructure.Persistence.Services
             var userNotifications = _unitOfWork.Repository<UserNofitication>()
             .GetQueryable()
             .Where(noti => noti.User.Id == userid)
-            .Include(x => x.User).Include(x => x.User.Orders).Where(x=>x.ArtworkId == x.)
+            .Include(x => x.User)
             .Include(x=>x.Artwork).ThenInclude(x => x.User)
             .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
             .Include(x => x.Notification);
@@ -178,11 +179,11 @@ namespace Infrastructure.Persistence.Services
             var result =  userNotifications.Select(_ => new GetUserNotificationDTO1
             {
                 Date = _.Notification.Date,
+                UserIdFor = _.UserIdFor,
                 ArtWorkVM = _mapper.Map<Artwork, ArtWorkVM>(_.Artwork),
                 UserVM = _mapper.Map<ApplicationUser, UserVM>(_.User),
                 ArtWorkImageVM = _mapper.Map<ArtworkImage, ArtWorkImageVM>(_.Artwork.ArtworkImages.FirstOrDefault()),
                 NotificationVM = _mapper.Map<Notification, NotificationVM>(_.Notification),
-                OrdersVM = _mapper.Map<Order, OrdersVM>(_.User.Orders.FirstOrDefault()),
             }).Sort(string.IsNullOrEmpty(defaultSearch.sortBy) ? "Date" : defaultSearch.sortBy
                       , defaultSearch.isAscending)
                       .ToPageList(defaultSearch.currentPage, defaultSearch.perPage).AsNoTracking().ToListAsync();

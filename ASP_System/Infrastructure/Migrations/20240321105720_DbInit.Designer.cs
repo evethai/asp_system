@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240318065644_DbInit")]
+    [Migration("20240321105720_DbInit")]
     partial class DbInit
     {
         /// <inheritdoc />
@@ -421,6 +421,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserIdFor")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -272,7 +272,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ArtworkId")
+                    b.Property<int>("ArtworkId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -628,7 +628,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.Artwork", "Artwork")
                         .WithMany()
-                        .HasForeignKey("ArtworkId");
+                        .HasForeignKey("ArtworkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.ApplicationUser", "User")
                         .WithMany()

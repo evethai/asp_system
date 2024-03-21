@@ -14,5 +14,6 @@ namespace Application.Interfaces.Services
         Task<PosterDTO> GetPosterByUserId(string UserId);
         Task<ResponseDTO> DecreasePost(string userId);
         //Task<ResponseDTO> QuantityExtensionPost(PosterAddDTO post); 
+        Task<ResponseDTO> IncreasePost(string userId);
     }
 }

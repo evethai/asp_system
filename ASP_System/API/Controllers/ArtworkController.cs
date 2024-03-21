@@ -1,4 +1,5 @@
-﻿using API.Service;
+﻿using API.Helper;
+using API.Service;
 using Application.Interfaces;
 using Application.Interfaces.Services;
 using Domain.Entities;
@@ -13,6 +14,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
+    //[Authorize(Roles = (AppRole.Admin_Customer))]
     [ApiController]
     
     public class ArtworkController : ControllerBase
@@ -58,7 +60,7 @@ namespace API.Controllers
 
 
         //post add
-        //[Authorize]
+        [Authorize]
         [HttpPost ("AddArtwork")]
         public async Task<IActionResult> AddArtwork( ArtworkAddDTO artwork)
         {
@@ -75,7 +77,7 @@ namespace API.Controllers
         //put update
         [Authorize]
         [HttpPut("UpdateArtwork")]
-        public async Task<IActionResult> UpdateArtwork([FromForm]ArtworkUpdateDTO artwork)
+        public async Task<IActionResult> UpdateArtwork(ArtworkUpdateDTO artwork)
         {
             var reponse = await _artworkService.UpdateArtwork(artwork);
             if (reponse.IsSuccess)

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using API.Helper;
+using Domain.Entities;
 using Domain.Model;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,8 @@ namespace Application.Interfaces.Services
         Task<ResponseDTO> RemoveUserNotification(int id);
         Task<ResponseDTO> RemoveAllUserNotificationsByUserId(string userId);
         Task<ResponseDTO> AddNoticationForAdmin(CreateAdminNotificationDTO noti);
+        Task<List<GetUserNotificationDTO1>> GetNotiSortResultAsync(string userId, DefaultSearch defaultSearch);
+        int totalGetNotiUserSortResult(string userId);
+
     }
 }

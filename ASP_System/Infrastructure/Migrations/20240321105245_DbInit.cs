@@ -355,7 +355,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ArtworkId = table.Column<int>(type: "int", nullable: true),
+                    ArtworkId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -365,7 +365,8 @@ namespace Infrastructure.Migrations
                         name: "FK_Like_Artwork_ArtworkId",
                         column: x => x.ArtworkId,
                         principalTable: "Artwork",
-                        principalColumn: "ArtworkId");
+                        principalColumn: "ArtworkId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Like_AspNetUsers_UserId",
                         column: x => x.UserId,

@@ -72,9 +72,9 @@ namespace Infrastructure.Persistence.Services
 			}
 		}
 
-		public async Task<ResponseDTO> DeleteComent(int CommentId)
+		public async Task<ResponseDTO> DeleteComent(CommentAddDTO CommentId)
 		{
-			var CheckId = await _unitOfWork.Repository<Comment>().GetByIdAsync(CommentId);
+			var CheckId = _unitOfWork.Repository<Comment>().GetQueryable().Where(p=>p.User.Id == CommentId.UserId && p.Artwork.ArtworkId == CommentId.ArtworkId).FirstOrDefault();
 			if (CheckId != null)
 			{
 				await _unitOfWork.Repository<Comment>().DeleteAsync(CheckId);

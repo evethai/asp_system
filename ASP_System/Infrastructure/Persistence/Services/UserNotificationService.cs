@@ -6,7 +6,9 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Model;
 using Firebase.Auth;
+using Infrastructure.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -107,8 +109,10 @@ namespace Infrastructure.Persistence.Services
                 nameUser = notification.User.LastName + " " + notification.User.FirstName,
                 dateTime = notification.Notification.Date,
                 notiStatus = notification.Notification.notiStatus,
-                artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image
-            }).ToList();
+                artwordUrl = notification.Artwork.ArtworkImages.FirstOrDefault().Image,
+                artworkId = notification.ArtworkId.Value,
+                notificationId = notification.NotificationId.Value
+            });
             return userNotificationDTOs;
         }
 
@@ -151,13 +155,50 @@ namespace Infrastructure.Persistence.Services
                     };
 
                 _unitOfWork.Repository<UserNofitication>().AddAsync(newUserNotification);
-                    _unitOfWork.Save();  // Assuming SaveAsync is an asynchronous method
+                _unitOfWork.Save();  // Assuming SaveAsync is an asynchronous method
 
                 }
 
             return await Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Notification added successfully"});
             
             
+        }
+
+        public Task<List<GetUserNotificationDTO1>> GetNotiSortResultAsync(string userid, DefaultSearch defaultSearch)
+        {
+            var userNotifications = _unitOfWork.Repository<UserNofitication>()
+            .GetQueryable()
+            .Where(noti => noti.User.Id == userid)
+            .Include(x => x.User)
+            .Include(x=>x.Artwork).ThenInclude(x => x.User)
+            .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
+            .Include(x => x.Notification);
+
+            var totalNotifi = userNotifications.Count();
+            var result =  userNotifications.Select(_ => new GetUserNotificationDTO1
+            {
+                Date = _.Notification.Date,
+                ArtWorkVM = _mapper.Map<Artwork, ArtWorkVM>(_.Artwork),
+                UserVM = _mapper.Map<ApplicationUser, UserVM>(_.User),
+                ArtWorkImageVM = _mapper.Map<ArtworkImage, ArtWorkImageVM>(_.Artwork.ArtworkImages.FirstOrDefault()),
+                NotificationVM = _mapper.Map<Notification, NotificationVM>(_.Notification),
+            }).Sort(string.IsNullOrEmpty(defaultSearch.sortBy) ? "Date" : defaultSearch.sortBy
+                      , defaultSearch.isAscending)
+                      .ToPageList(defaultSearch.currentPage, defaultSearch.perPage).AsNoTracking().ToListAsync();
+            return result;
+        }
+
+        public int totalGetNotiUserSortResult(string userid)
+        {
+            var userNotifications = _unitOfWork.Repository<UserNofitication>()
+           .GetQueryable()
+           .Where(noti => noti.User.Id == userid)
+           .Include(x => x.User)
+           .Include(x => x.Artwork).ThenInclude(x => x.ArtworkImages)
+           .Include(x => x.Notification);
+
+            var totalNotifi = userNotifications.Count();
+            return totalNotifi;
         }
     }
 }

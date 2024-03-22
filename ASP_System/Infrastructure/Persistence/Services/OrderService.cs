@@ -24,20 +24,18 @@ namespace Infrastructure.Persistence.Services
             _mapper = mapper;
             _userManager = userManager;
         }
-        public Task<ResponseDTO> CreateOrder(OrderCreateDTO order, string userID) 
+        public Task<ResponseDTO> CreateOrder(OrderCreateDTO order) 
         {
             try
             {
-                var currentUser = _userManager.FindByIdAsync(userID).Result;
                 var newOrder = new Order
                 {
                     Date = DateTime.Now,
                     Code = order.Code,
                     ReOrderStatus = order.ReOrderStatus,
                     ArtworkId = order.ArtworkId,
-                    User = currentUser
-
-                };
+                    UserId = order.UserId
+				};
                 _unitOfWork.Repository<Order>().AddAsync(newOrder);
                 _unitOfWork.Save();
                 return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Order added successfully", Data = order });

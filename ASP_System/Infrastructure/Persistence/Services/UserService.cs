@@ -4,6 +4,7 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Model;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -76,7 +77,7 @@ namespace Infrastructure.Persistence.Services
         public async Task<ProfileUserDTO> GetUserByIDlAsync(string userId)
         {
             var user = _userManager.FindByIdAsync(userId);
-            var artworkList =  _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.User.Id == user.Result.Id).ToList();
+            var artworkList =  _unitOfWork.Repository<Artwork>().GetQueryable().Where(a => a.User.Id == user.Result.Id && a.Status==ArtWorkStatus.InProgress).ToList();
             var ArtworkDTOList = _mapper.Map<List<ArtworkDTO>>(artworkList);
 
             List<Artwork_Profile> artwork_Profiles = new List<Artwork_Profile>();
@@ -138,7 +139,8 @@ namespace Infrastructure.Persistence.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
-                UserName = model.Email
+                UserName = model.Email,
+                IsActive = true
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -164,6 +166,7 @@ namespace Infrastructure.Persistence.Services
 
                 //await _userManager.AddToRoleAsync(user, AppRole.Customer);
             }
+
             return result;
         }
 

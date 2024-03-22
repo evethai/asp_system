@@ -28,5 +28,6 @@ namespace Domain.Entities
 
         public virtual ICollection<ArtworkImage> ArtworkImages { get; set; } = null!;
         public virtual ApplicationUser User { get; set; } = null!;
-    }
+		public virtual Cart? Cart { get; set; } 
+	}
 }

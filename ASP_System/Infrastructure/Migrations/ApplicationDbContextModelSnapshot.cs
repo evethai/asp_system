@@ -33,6 +33,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CartId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -102,6 +105,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CartId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -120,6 +125,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArtworkId"));
+
+                    b.Property<Guid?>("CartId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("CreateOn")
                         .HasColumnType("datetime2");
@@ -148,6 +156,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ArtworkId");
+
+                    b.HasIndex("CartId");
 
                     b.HasIndex("UserId");
 
@@ -197,6 +207,35 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ArtworkId");
 
                     b.ToTable("Artwork_Image");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Cart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ArtWorkId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ArtWorkImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -339,6 +378,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderId");
@@ -566,11 +606,26 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.ApplicationUser", b =>
+                {
+                    b.HasOne("Domain.Entities.Cart", "Cart")
+                        .WithMany("Users")
+                        .HasForeignKey("CartId");
+
+                    b.Navigation("Cart");
+                });
+
             modelBuilder.Entity("Domain.Entities.Artwork", b =>
                 {
+                    b.HasOne("Domain.Entities.Cart", "Cart")
+                        .WithMany("Artworks")
+                        .HasForeignKey("CartId");
+
                     b.HasOne("Domain.Entities.ApplicationUser", "User")
                         .WithMany("Artworks")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Cart");
 
                     b.Navigation("User");
                 });
@@ -652,7 +707,9 @@ namespace Infrastructure.Migrations
 
                     b.HasOne("Domain.Entities.ApplicationUser", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Artwork");
 
@@ -762,6 +819,13 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Artwork", b =>
                 {
                     b.Navigation("ArtworkImages");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Cart", b =>
+                {
+                    b.Navigation("Artworks");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Domain.Entities.Notification", b =>

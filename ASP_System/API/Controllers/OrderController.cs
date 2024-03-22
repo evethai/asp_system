@@ -23,12 +23,12 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("CreateOrder")]
-        public async Task<IActionResult> CreateOrder([FromForm] OrderCreateDTO order)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDTO order)
         {
             try
             {
                 var currentUser = _currentUserService.GetUserId();
-                var result = await _orderService.CreateOrder(order, currentUser.ToString());
+                var result = await _orderService.CreateOrder(order);
                 return Ok(result);
             }
             catch (Exception ex)

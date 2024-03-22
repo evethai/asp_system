@@ -27,41 +27,36 @@ namespace Infrastructure.Persistence.Services
         }
 
         public async Task<ResponseDTO> CreateLike(LikeCreateDTO like)
-        {
-            //try
-            //{
-            //    var currentUser = _userManager.FindByIdAsync(userID).Result;
-            //    var newLike = new Like
-            //    {
-            //        ArtworkId = like.ArtworkId,
-            //        User = currentUser
-
-            //    };
-            //    _unitOfWork.Repository<Like>().AddAsync(newLike);
-            //    _unitOfWork.Save();
-            //    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Like added successfully", Data = like });
-            //}
-            //catch (Exception ex)
-            //{
-            //    return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
-            //}
+        {           
             try
             {
-                var CheckArt = _unitOfWork.Repository<Artwork>().GetQueryable().Where(p => p.ArtworkId == like.ArtworkId).FirstOrDefault();
-                var CheckUser = await _userManager.FindByIdAsync(like.UserId);
-                if (CheckUser != null && CheckArt != null)
-                {
-                    var newlike = _mapper.Map<Like>(like);
-                    newlike.Artwork = CheckArt;
-                    newlike.User = CheckUser;
-                    await _unitOfWork.Repository<Like>().AddAsync(newlike);
-                    _unitOfWork.Save();
-                    return new ResponseDTO { IsSuccess = true, Message = "Like added successfully", Data = like };
+
+				var CheckId = _unitOfWork.Repository<Like>().GetQueryable().Where(p => p.User.Id == like.UserId && p.Artwork.ArtworkId == like.ArtworkId).FirstOrDefault();
+				if (CheckId != null)
+				{
+					await _unitOfWork.Repository<Like>().DeleteAsync(CheckId);
+					_unitOfWork.Save();
+					return new ResponseDTO { IsSuccess = true, Message = "Like delete successfully" };
                 }
                 else
                 {
-                    return new ResponseDTO { IsSuccess = false, Message = "Likes added fail" };
-                }
+					var CheckArt = _unitOfWork.Repository<Artwork>().GetQueryable().Where(p => p.ArtworkId == like.ArtworkId).FirstOrDefault();
+					var CheckUser = await _userManager.FindByIdAsync(like.UserId);
+					if (CheckUser != null && CheckArt != null)
+					{
+						var newlike = _mapper.Map<Like>(like);
+						newlike.Artwork = CheckArt;
+						newlike.User = CheckUser;
+						await _unitOfWork.Repository<Like>().AddAsync(newlike);
+						_unitOfWork.Save();
+						return new ResponseDTO { IsSuccess = true, Message = "Like added successfully", Data = like };
+					}
+					else
+					{
+						return new ResponseDTO { IsSuccess = false, Message = "Likes added fail" };
+					}
+				}
+				
             }
             catch (Exception ex)
             {

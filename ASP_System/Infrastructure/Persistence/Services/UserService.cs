@@ -178,11 +178,12 @@ namespace Infrastructure.Persistence.Services
                 // User doesn't exist, create a new user
                 var newUser = new ApplicationUser
                 {
-                    UserName = model.Email, // You can set the username to the user's email address
-                    Email = model.Email,
-                    FirstName = model.FirstName
-                    // Add additional properties as needed
-                };
+					FirstName = model.FirstName,
+					Email = model.Email,
+					UserName = model.Email,
+					IsActive = true
+					// Add additional properties as needed
+				};
 
                 var user = await _userManager.CreateAsync(newUser, model.Email);
                 if (user.Succeeded)

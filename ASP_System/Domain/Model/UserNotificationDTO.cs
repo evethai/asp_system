@@ -29,6 +29,7 @@ namespace Domain.Model
         public int? NotificationId { get; set; }
         [Required(ErrorMessage = "Title is required")]
         public int? ArtworkId { get; set; } 
+        public string? UserIdFor {  get; set; }
     }
     public class CreateAdminNotificationDTO
     {
@@ -85,9 +86,11 @@ namespace Domain.Model
         public bool? IsRead { get; set; }
         public NotiStatus notiStatus { get; set; }
     }
+
     public class GetUserNotificationDTO1
     {
         public DateTime Date { get; set; }
+        public string? UserIdFor {  get; set; }
         public UserVM UserVM {  get; set; }
         public ArtWorkVM ArtWorkVM { get; set; }
         public ArtWorkImageVM ArtWorkImageVM { get; set; }

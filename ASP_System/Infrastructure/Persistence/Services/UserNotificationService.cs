@@ -46,7 +46,8 @@ namespace Infrastructure.Persistence.Services
                     
                     ArtworkId = noti.ArtworkId,
                     NotificationId = noti.NotificationId,
-                    User = user  // Assuming User property is related to ApplicationUser in UserNotification
+                    User = user,
+                    UserIdFor = noti.UserIdFor// Assuming User property is related to ApplicationUser in UserNotification
                 };
 
                 _unitOfWork.Repository<UserNofitication>().AddAsync(newUserNotification);
@@ -95,7 +96,7 @@ namespace Infrastructure.Persistence.Services
             var userNotifications = await _unitOfWork.Repository<UserNofitication>()
             .GetQueryable()
             .Where(noti => noti.User.Id == userId)
-            .Include(x=> x.User)
+            .Include(x=> x.User).ThenInclude(x=>x.Orders)
             .Include(x => x.Artwork).ThenInclude(x=>x.ArtworkImages)
             .Include(x => x.Notification)
             .ToListAsync();
@@ -178,6 +179,7 @@ namespace Infrastructure.Persistence.Services
             var result =  userNotifications.Select(_ => new GetUserNotificationDTO1
             {
                 Date = _.Notification.Date,
+                UserIdFor = _.UserIdFor,
                 ArtWorkVM = _mapper.Map<Artwork, ArtWorkVM>(_.Artwork),
                 UserVM = _mapper.Map<ApplicationUser, UserVM>(_.User),
                 ArtWorkImageVM = _mapper.Map<ArtworkImage, ArtWorkImageVM>(_.Artwork.ArtworkImages.FirstOrDefault()),

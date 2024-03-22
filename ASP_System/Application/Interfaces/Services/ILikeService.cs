@@ -11,7 +11,7 @@ namespace Application.Interfaces.Services
     {
         //Task<LikeDTO> GetLike(int idLike);
         Task<ResponseDTO> CreateLike(LikeCreateDTO like);
-        Task<ResponseDTO> DeleteLike(LikeCreateDTO LikeId);
+        //Task<ResponseDTO> DeleteLike(LikeCreateDTO LikeId);
         Task<IEnumerable<LikeDTO>> GetAllLikeByArtworkId(int ArtworkId);
     }
 }

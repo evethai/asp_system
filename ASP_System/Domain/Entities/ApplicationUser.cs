@@ -23,5 +23,6 @@ namespace Domain.Entities
         public virtual ICollection<Poster> Posters { get; set; }
         public virtual ICollection<Follower> Followers { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual Cart? Cart { get; set; } 
     }
 }

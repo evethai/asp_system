@@ -23,8 +23,9 @@ namespace Infrastructure.Data
         public DbSet<Poster> Poster { get; set; }
         public DbSet<Notification> Notification { get; set; }
         public DbSet<Comment> Comment { get; set; }
+        public DbSet<Cart> Cart { get; set; }
 
-        private class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<ApplicationUser>
+		private class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<ApplicationUser>
         {
             public void Configure(EntityTypeBuilder<ApplicationUser> builder)
             {

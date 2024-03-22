@@ -33,6 +33,7 @@ public static class DependencyInjection
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<ILikeService, LikeService>();
         services.AddScoped<ICommentService, CommentService>();
-        return services;
+        services.AddScoped<ICartService, CartService>();
+		return services;
     }
 }

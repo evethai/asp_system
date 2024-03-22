@@ -70,6 +70,8 @@ namespace API.Helper
             CreateMap<ArtworkImage, ArtWorkImageVM> ().ReverseMap();
             CreateMap<Notification, NotificationVM> ().ReverseMap();
 
-        }
+
+			CreateMap<Cart, CartDTO>().ReverseMap();
+		}
     }
 }

@@ -139,8 +139,9 @@ namespace Infrastructure.Persistence.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
-                UserName = model.Email
-            };
+                UserName = model.Email,
+                IsActive = true,
+			};
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if(result.Succeeded)

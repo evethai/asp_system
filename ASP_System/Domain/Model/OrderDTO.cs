@@ -39,9 +39,10 @@ namespace Domain.Model
 
     public class OrderCreateDTO
     {
-        public string? Code { get; set; }
-        public int? ArtworkId { get; set; }
-        public bool? ReOrderStatus { get; set; }
+        public string Code { get; set; }
+        public int ArtworkId { get; set; }
+        public bool ReOrderStatus { get; set; }
+        public string UserId { get; set; }
         
     }
     

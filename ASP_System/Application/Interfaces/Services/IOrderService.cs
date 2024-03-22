@@ -11,7 +11,7 @@ namespace Application.Interfaces.Services
     {
         Task<OrderDTO> GetOrder(int id);
         Task<ResponseDTO> UpdateOrder(OrderUpdateDTO order);
-        Task<ResponseDTO> CreateOrder(OrderCreateDTO order, string userId);
+        Task<ResponseDTO> CreateOrder(OrderCreateDTO order);
         Task<ResponseDTO> DeleteOrder(OrderDeleteDTO order);
         Task<IEnumerable<OrderDTO>> GetAllOrder();
 		Task<IEnumerable<OrderDTO>> GetOrderByUser(string userId);

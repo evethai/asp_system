@@ -36,24 +36,7 @@ namespace API.Controllers
             }
         }
 
-        //[Authorize]
-        [HttpDelete("DeleteLike")]
-        public async Task<IActionResult> DeleteLike(LikeCreateDTO LikeId)
-        {
-            var reponse = await _likeService.DeleteLike(LikeId);
-            if (reponse.IsSuccess)
-            {
-                return Ok(reponse);
-            }
-            return BadRequest(reponse);
-        }
-
-        //[HttpGet("GetLike{id}")]
-        //public async Task<IActionResult> GetLike(int id)
-        //{
-        //    var result = await _likeService.GetLike(id);
-        //    return Ok(result);
-        //}
+        
 
         [HttpGet("GetAllLikeByArtworkId")]
         public async Task<IActionResult> GetAllLikeByArtworkId(int ArtworkId)

@@ -27,41 +27,36 @@ namespace Infrastructure.Persistence.Services
         }
 
         public async Task<ResponseDTO> CreateLike(LikeCreateDTO like)
-        {
-            //try
-            //{
-            //    var currentUser = _userManager.FindByIdAsync(userID).Result;
-            //    var newLike = new Like
-            //    {
-            //        ArtworkId = like.ArtworkId,
-            //        User = currentUser
-
-            //    };
-            //    _unitOfWork.Repository<Like>().AddAsync(newLike);
-            //    _unitOfWork.Save();
-            //    return Task.FromResult(new ResponseDTO { IsSuccess = true, Message = "Like added successfully", Data = like });
-            //}
-            //catch (Exception ex)
-            //{
-            //    return Task.FromResult(new ResponseDTO { IsSuccess = false, Message = ex.Message });
-            //}
+        {           
             try
             {
-                var CheckArt = _unitOfWork.Repository<Artwork>().GetQueryable().Where(p => p.ArtworkId == like.ArtworkId).FirstOrDefault();
-                var CheckUser = await _userManager.FindByIdAsync(like.UserId);
-                if (CheckUser != null && CheckArt != null)
-                {
-                    var newlike = _mapper.Map<Like>(like);
-                    newlike.Artwork = CheckArt;
-                    newlike.User = CheckUser;
-                    await _unitOfWork.Repository<Like>().AddAsync(newlike);
-                    _unitOfWork.Save();
-                    return new ResponseDTO { IsSuccess = true, Message = "Like added successfully", Data = like };
+
+				var CheckId = _unitOfWork.Repository<Like>().GetQueryable().Where(p => p.User.Id == like.UserId && p.Artwork.ArtworkId == like.ArtworkId).FirstOrDefault();
+				if (CheckId != null)
+				{
+					await _unitOfWork.Repository<Like>().DeleteAsync(CheckId);
+					_unitOfWork.Save();
+					return new ResponseDTO { IsSuccess = true, Message = "Like delete successfully" };
                 }
                 else
                 {
-                    return new ResponseDTO { IsSuccess = false, Message = "Likes added fail" };
-                }
+					var CheckArt = _unitOfWork.Repository<Artwork>().GetQueryable().Where(p => p.ArtworkId == like.ArtworkId).FirstOrDefault();
+					var CheckUser = await _userManager.FindByIdAsync(like.UserId);
+					if (CheckUser != null && CheckArt != null)
+					{
+						var newlike = _mapper.Map<Like>(like);
+						newlike.Artwork = CheckArt;
+						newlike.User = CheckUser;
+						await _unitOfWork.Repository<Like>().AddAsync(newlike);
+						_unitOfWork.Save();
+						return new ResponseDTO { IsSuccess = true, Message = "Like added successfully", Data = like };
+					}
+					else
+					{
+						return new ResponseDTO { IsSuccess = false, Message = "Likes added fail" };
+					}
+				}
+				
             }
             catch (Exception ex)
             {
@@ -69,16 +64,6 @@ namespace Infrastructure.Persistence.Services
             }
 
         }
-
-        //public async Task<LikeDTO> GetLike(int id)
-        //{
-        //    var Like = await _unitOfWork.Repository<Like>().GetByIdAsync(id);
-        //    LikeDTO likeDTO = _mapper.Map<LikeDTO>(Like);
-
-        //    likeDTO.UserId = await _unitOfWork.Repository<Like>().GetQueryable().Where(a => a.Id == id).Select(a => a.User.Id).FirstOrDefaultAsync();
-
-        //    return likeDTO;
-        //}
         public async Task<IEnumerable<LikeDTO>> GetAllLikeByArtworkId(int ArtworkId)
         {
             //var LikeList = await _unitOfWork.Repository<Like>().GetAllAsync();
@@ -105,36 +90,36 @@ namespace Infrastructure.Persistence.Services
             }
         }
 
-        public async Task<ResponseDTO> DeleteLike(LikeCreateDTO LikeId)
-        {
-            //try
-            //{
-            //    var existingLike = _unitOfWork.Repository<Like>().GetQueryable().FirstOrDefault(a => a.Id == LikeId);
-            //    if (existingLike == null)
-            //    {
-            //        return (new ResponseDTO { IsSuccess = false, Message = "Like not found" });
-            //    }
-            //    existingLike = submitCourse(existingLike, like);
-            //    await _unitOfWork.Repository<Like>().DeleteAsync(existingLike);
-            //    _unitOfWork.Save();
-            //    return (new ResponseDTO { IsSuccess = true, Message = "Like deleted successfully", Data = like });
-            //}
-            //catch (Exception ex)
-            //{
-            //    return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
-            //}
-            var CheckId = _unitOfWork.Repository<Like>().GetQueryable().Where(p=>p.User.Id == LikeId.UserId && p.Artwork.ArtworkId == LikeId.ArtworkId).FirstOrDefault();
-            if (CheckId != null)
-            {
-                await _unitOfWork.Repository<Like>().DeleteAsync(CheckId);
-                _unitOfWork.Save();
-                return new ResponseDTO { IsSuccess = true, Message = "Like delete successfully" };
-            }
-            else
-            {
-                return new ResponseDTO { IsSuccess = false, Message = "Likes delete fail" };
-            }
-        }
+        //public async Task<ResponseDTO> DeleteLike(LikeCreateDTO LikeId)
+        //{
+        //    //try
+        //    //{
+        //    //    var existingLike = _unitOfWork.Repository<Like>().GetQueryable().FirstOrDefault(a => a.Id == LikeId);
+        //    //    if (existingLike == null)
+        //    //    {
+        //    //        return (new ResponseDTO { IsSuccess = false, Message = "Like not found" });
+        //    //    }
+        //    //    existingLike = submitCourse(existingLike, like);
+        //    //    await _unitOfWork.Repository<Like>().DeleteAsync(existingLike);
+        //    //    _unitOfWork.Save();
+        //    //    return (new ResponseDTO { IsSuccess = true, Message = "Like deleted successfully", Data = like });
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    return (new ResponseDTO { IsSuccess = false, Message = ex.Message });
+        //    //}
+        //    var CheckId = _unitOfWork.Repository<Like>().GetQueryable().Where(p=>p.User.Id == LikeId.UserId && p.Artwork.ArtworkId == LikeId.ArtworkId).FirstOrDefault();
+        //    if (CheckId != null)
+        //    {
+        //        await _unitOfWork.Repository<Like>().DeleteAsync(CheckId);
+        //        _unitOfWork.Save();
+        //        return new ResponseDTO { IsSuccess = true, Message = "Like delete successfully" };
+        //    }
+        //    else
+        //    {
+        //        return new ResponseDTO { IsSuccess = false, Message = "Likes delete fail" };
+        //    }
+        //}
 
         private Like submitCourse(Like existingLike, LikeDeleteDTO like)
         {
